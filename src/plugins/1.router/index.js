@@ -1,6 +1,8 @@
 import { setupLayouts } from 'virtual:generated-layouts'
 // eslint-disable-next-line import/no-unresolved
 import { createRouter, createWebHistory } from 'vue-router/auto'
+import { setupGuards } from './guards'
+import { routes } from './additional-routes'
 
 function recursiveLayouts(route) {
   if (route.children) {
@@ -26,6 +28,7 @@ const router = createRouter({
   ],
 })
 
+setupGuards(router)
 export { router }
 export default function (app) {
   app.use(router)

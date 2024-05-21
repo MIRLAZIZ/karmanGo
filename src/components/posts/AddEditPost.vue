@@ -1,27 +1,42 @@
 <template>
   <div>
 
-    <h1>{{ $route.params.id ? 'Edit post' : 'Create Post' }}</h1>
+    <h2 class="mb-5">{{ $route.params.id ? 'Edit post' : 'Kategorya qo\'shish' }}</h2>
 
     <!-- 👉 Form -->
     <VForm ref="refForm" @submit.prevent="sendPost">
       <VRow>
 
-        <!-- 👉 select user -->
-        <VCol cols="6">
-          <AppSelect v-model="productData.userId" label="Select user" placeholder="Select user"
-            :rules="[requiredValidator]" :items="store.users" item-title="name" item-value="id" />
+        <VCol cols="12" class="">
+          <div>
+            <img :src="image" alt="" class="categoryImg" v-if="image">
+            <div class="categoryImg border mb-4 d-flex align-center justify-center" v-else> Kategoriya rasmi</div>
+
+          </div>
+          <label for="image" class="border d-block  p-3  d-flex align-center justify-center labelHeight">
+            {{ $route.params.id ? 'Rasmni o\'zgartirish' : 'Yuklash' }}
+          </label>
+
+          <input type="file" @change="onFileChange" id="image" class="d-none" accept="image/png, image/jpeg">
+
         </VCol>
 
-        <!-- 👉 title -->
-        <VCol cols="6">
-          <AppTextField v-model="productData.title" :rules="[requiredValidator]" label="Title" />
+
+        <!-- 👉 category name uz -->
+        <VCol cols="12" class="" md="6">
+          <AppTextField v-model="categoryData.name_uz" :rules="[requiredValidator]" label="Kategoriya nomi uz" />
         </VCol>
 
-        <!-- 👉 post -->
-        <VCol cols="6">
-          <AppTextarea v-model="productData.body" :rules="[requiredValidator]" rows="4" label="Post" />
+        <!-- 👉 category name  ru-->
+        <VCol cols="12" class="" md="6">
+          <AppTextField v-model="categoryData.name_ru" :rules="[requiredValidator]" label="Kategoriya nomi ru" />
         </VCol>
+        <!-- 👉 category name en -->
+        <VCol cols="12" class="" md="6">
+          <AppTextField v-model="categoryData.name_en" :rules="[requiredValidator]" label="Kategoriya nomi en" />
+        </VCol>
+
+
 
         <!-- btn group -->
         <VCol cols="12" class="d-flex justify-end">
@@ -39,47 +54,72 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
-import { usePostsStore } from '@/@core/stores/posts';
-import { useRoute, useRouter } from 'vue-router';
+import AppTextField from '@/@core/components/app-form-elements/AppTextField.vue';
+import { useCategorysStore } from '@/@core/stores/categorys';
 import { useConfigStore } from '@/@core/stores/config';
+import { onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute().params.id
 const router = useRouter()
 const storeConfig = useConfigStore()
+const baseUrl = import.meta.env.VITE_API_BASE_URL
 
-const productData = ref({
-  title: null,
-  body: null,
-  userId: null,
+
+const categoryData = ref({
+  name_uz: null,
+  name_ru: null,
+  name_en: null,
+  image: null,
 })
+// img object URL
+const image = ref(null)
 
-const store = usePostsStore()
+const store = useCategorysStore()
 const refForm = ref()
+// input file category img
+const onFileChange = (event) => {
+  categoryData.value.image = event.target.files[0]
+  image.value = URL.createObjectURL(categoryData.value.image)
 
+}
 // send post method
 const sendPost = () => {
+
   refForm.value?.validate().then(({ valid }) => {
     if (valid) {
+      const formdata = new FormData()
+      formdata.append('name_uz', categoryData.value.name_uz)
+      formdata.append('name_ru', categoryData.value.name_ru)
+      formdata.append('name_en', categoryData.value.name_en)
+      formdata.append('image', categoryData.value.image)
 
       if (route) {
-        store.updatePost(route, productData.value).then(() => {
+
+        store.updateCategory(route, formdata).then(() => {
           router.push('/')
+            .then(() => {
+              storeConfig.successToast('Kategoriya qo\'shildi')
+            })
 
         }).catch((err) => {
-          if (!err.response.ok) {
-            storeConfig.errorToast('server error')
-          }
+          console.log(err.response);
+          storeConfig.errorToast(err.response._data.message)
         })
       } else {
-        store.createPost(productData.value).then((res) => {
-          store.getposts.unshift(res)
+        store.CreateCategory(formdata).then((res) => {
           router.push('/')
+            .then(() => {
+              setTimeout(() => {
+                storeConfig.successToast('Kategoriya tahrirlandi')
+
+              }, 1000)
+            })
+
+
         })
           .catch((err) => {
-            if (!err.response.ok) {
-              storeConfig.errorToast('server error')
-            }
+            storeConfig.errorToast(err.response._data.message)
           })
       }
     }
@@ -93,37 +133,55 @@ const closeNavigationDrawer = () => {
 
 }
 
-// get post data
-const getpostData = () => {
-  if (!store.getposts.length) {
-    store.fetchPosts()
-      .then(() => {
-        store.PostDataOne(route) ? productData.value = store.PostDataOne(route) : closeNavigationDrawer()
-      })
-  } else {
-    productData.value = store.PostDataOne(route)
-
+// get one categoryData
+const getData = () => {
+  if (route) {
+    store.getOneCategory(route).then(res => {
+      categoryData.value.name_en = res.result.name_en
+      categoryData.value.name_ru = res.result.name_ru
+      categoryData.value.name_uz = res.result.name_uz
+      image.value = baseUrl + res.result.image
+    }
+    )
   }
 }
 
-// get user data
-const getuserData = () => {
-  if (!store.users.length) {
-    store.fetchUsers()
-  }
-}
+
+
+
 
 
 
 onMounted(() => {
-  getuserData()
+  getData()
 
-  if (route) {
 
-    getpostData()
-  }
 
 
 })
 
 </script>
+
+<style>
+.categoryImg {
+  /* stylelint-disable-next-line liberty/use-logical-spec */
+  width: 150px;
+  /* stylelint-disable-next-line liberty/use-logical-spec */
+  height: 150px;
+  /* stylelint-disable-next-line order/properties-order */
+  border-radius: 10px;
+}
+
+.labelHeight {
+  /* stylelint-disable-next-line liberty/use-logical-spec */
+  /* stylelint-disable-next-line liberty/use-logical-spec */
+  width: 150px;
+  /* stylelint-disable-next-line liberty/use-logical-spec */
+  height: 40px !important;
+  border-radius: 5px;
+  box-shadow: 5px 10px 20px 5px #7367F0 inset;
+  /* stylelint-disable-next-line order/properties-order */
+  background: #7367F0;
+  color: #fff;
+}
+</style>

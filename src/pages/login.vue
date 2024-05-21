@@ -1,3 +1,4 @@
+<!-- eslint-disable array-bracket-newline -->
 <script setup>
 import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
@@ -9,8 +10,14 @@ import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
-
-definePage({ meta: { layout: 'blank' } })
+import { useAbility } from '@casl/vue'
+// definePage({ meta: { layout: 'blank' } })
+definePage({
+  meta: {
+    layout: 'blank',
+    unauthenticatedOnly: true,
+  },
+})
 
 const form = ref({
   email: '',
@@ -18,51 +25,76 @@ const form = ref({
   remember: false,
 })
 
+// const ability = useAbility()
+const ability = useAbility()
+
+const router = useRouter()
+
+const refLogin = ref()
+
+const sendLogin = () => {
+
+  refLogin.value.validate().then(({ valid: isValid }) => {
+    if (isValid) {
+      let abilityRules = [
+        //   {
+        //   action: 'manage',
+        //   subject: 'all',
+
+        // },
+        {
+          action: 'create',
+          subject: 'all'
+        },
+
+        {
+          action: 'read',
+          subject: 'all'
+        },
+      ]
+      let token = '789|yjFr06EZXSxptVAPJIMZFDVo26SAxtMhlMGPLgkd'
+      let user = {
+        name: 'Admin',
+        email: 'admin@vuexy',
+        id: 1,
+        role: 'admin',
+      }
+      useCookie('userAbilityRules').value = abilityRules
+      ability.update(abilityRules)
+      useCookie('userData').value = user
+      useCookie('accessToken').value = token
+      router.push('/')
+
+      console.log('valid')
+
+    } else {
+      console.log('invalid')
+    }
+  })
+}
+
+
 const isPasswordVisible = ref(false)
 const authThemeImg = useGenerateImageVariant(authV2LoginIllustrationLight, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 </script>
 
 <template>
-  <VRow
-    no-gutters
-    class="auth-wrapper bg-surface"
-  >
-    <VCol
-      md="8"
-      class="d-none d-md-flex"
-    >
+  <VRow no-gutters class="auth-wrapper bg-surface">
+    <VCol md="8" class="d-none d-md-flex">
       <div class="position-relative bg-background rounded-lg w-100 ma-8 me-0">
         <div class="d-flex align-center justify-center w-100 h-100">
-          <VImg
-            max-width="505"
-            :src="authThemeImg"
-            class="auth-illustration mt-16 mb-2"
-          />
+          <VImg max-width="505" :src="authThemeImg" class="auth-illustration mt-16 mb-2" />
         </div>
 
-        <VImg
-          class="auth-footer-mask"
-          :src="authThemeMask"
-        />
+        <VImg class="auth-footer-mask" :src="authThemeMask" />
       </div>
     </VCol>
 
-    <VCol
-      cols="12"
-      md="4"
-      class="auth-card-v2 d-flex align-center justify-center"
-    >
-      <VCard
-        flat
-        :max-width="500"
-        class="mt-12 mt-sm-0 pa-4"
-      >
+    <VCol cols="12" md="4" class="auth-card-v2 d-flex align-center justify-center">
+      <VCard flat :max-width="500" class="mt-12 mt-sm-0 pa-4">
         <VCardText>
-          <VNodeRenderer
-            :nodes="themeConfig.app.logo"
-            class="mb-6"
-          />
+          <VNodeRenderer :nodes="themeConfig.app.logo" class="mb-6" />
           <h4 class="text-h4 mb-1">
             Welcome to <span class="text-capitalize">{{ themeConfig.app.title }}</span>! 👋🏻
           </h4>
@@ -71,70 +103,43 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
           </p>
         </VCardText>
         <VCardText>
-          <VForm @submit.prevent="() => { }">
+          <VForm ref="refLogin" @submit.prevent="sendLogin">
             <VRow>
               <!-- email -->
               <VCol cols="12">
-                <AppTextField
-                  v-model="form.email"
-                  autofocus
-                  label="Email"
-                  type="email"
-                  placeholder="johndoe@email.com"
-                />
+                <AppTextField v-model="form.email" autofocus label="Email" type="email" placeholder="johndoe@email.com"
+                  :rules="[requiredValidator, emailValidator]" />
               </VCol>
 
               <!-- password -->
               <VCol cols="12">
-                <AppTextField
-                  v-model="form.password"
-                  label="Password"
-                  placeholder="············"
+                <AppTextField v-model="form.password" label="Password" placeholder="············"
                   :type="isPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
-                  @click:append-inner="isPasswordVisible = !isPasswordVisible"
-                />
+                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'" :rules="[passwordValidator]"
+                  @click:append-inner="isPasswordVisible = !isPasswordVisible" />
 
                 <div class="d-flex align-center flex-wrap justify-space-between mt-2 mb-4">
-                  <VCheckbox
-                    v-model="form.remember"
-                    label="Remember me"
-                  />
-                  <a
-                    class="text-primary ms-2 mb-1"
-                    href="#"
-                  >
+                  <VCheckbox v-model="form.remember" label="Remember me" />
+                  <a class="text-primary ms-2 mb-1" href="#">
                     Forgot Password?
                   </a>
                 </div>
 
-                <VBtn
-                  block
-                  type="submit"
-                >
+                <VBtn block type="submit">
                   Login
                 </VBtn>
               </VCol>
 
               <!-- create account -->
-              <VCol
-                cols="12"
-                class="text-center text-base"
-              >
+              <VCol cols="12" class="text-center text-base">
                 <span>New on our platform?</span>
 
-                <a
-                  class="text-primary ms-2"
-                  href="#"
-                >
+                <a class="text-primary ms-2" href="#">
                   Create an account
                 </a>
               </VCol>
 
-              <VCol
-                cols="12"
-                class="d-flex align-center"
-              >
+              <VCol cols="12" class="d-flex align-center">
                 <VDivider />
 
                 <span class="mx-4">or</span>
@@ -143,10 +148,7 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
               </VCol>
 
               <!-- auth providers -->
-              <VCol
-                cols="12"
-                class="text-center"
-              >
+              <VCol cols="12" class="text-center">
                 <AuthProvider />
               </VCol>
             </VRow>
