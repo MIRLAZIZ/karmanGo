@@ -1,19 +1,21 @@
 export default [
+
+  {
+    title: 'Maxsulotlar',
+    to: { name: 'root' },
+    icon: { icon: 'tabler-file' },
+    action: 'read',
+    subject: 'all',
+  },
   {
     title: 'Kategoriyalar',
-    to: { name: 'root' },
+    to: { name: 'categories' },
     icon: { icon: 'tabler-smart-home' },
     action: 'create',
     subject: 'all'
 
   },
-  {
-    title: 'Maxsulotlar',
-    to: { name: 'products' },
-    icon: { icon: 'tabler-file' },
-    action: 'read',
-    subject: 'all',
-  },
+
   {
     title: 'Filial',
     to: { name: 'branches' },
@@ -60,6 +62,13 @@ export default [
   {
     title: 'Top banners',
     to: { name: 'top-banners' },
+    icon: { icon: 'tabler-file' },
+    action: 'read',
+    subject: 'all',
+  },
+  {
+    title: 'Orders',
+    to: { name: 'orders' },
     icon: { icon: 'tabler-file' },
     action: 'read',
     subject: 'all',

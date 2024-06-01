@@ -14,6 +14,11 @@
       <template #item.actions="{ item }">
 
         <!-- action buttons -->
+        <!-- permissions -->
+        <IconBtn @click="$router.push(`/roles/permission/${item.id} `)" class="border mx-2" size="large"
+          v-if="item.name != 'admin'">
+          <VIcon icon="tabler-square-key" color="success" />
+        </IconBtn>
 
         <!-- edit item -->
         <IconBtn @click="$router.push(`/roles/edit/${item.id}`)" class="border mx-2">
@@ -51,11 +56,11 @@
 </template>
 
 <script setup>
-import { VDataTable } from 'vuetify/labs/VDataTable';
+import { useConfigStore } from '@/@core/stores/config';
 import { useRolesStore } from '@/@core/stores/roles';
 import DeleteDialog from '@/components/posts/DeleteDialog.vue';
 import { onMounted, ref } from 'vue';
-import { useConfigStore } from '@/@core/stores/config';
+import { VDataTable } from 'vuetify/labs/VDataTable';
 
 
 const store = useRolesStore()
@@ -73,8 +78,8 @@ definePage({
     subject: 'all',
   },
 })
-// "banner": "/storage/banner/2024-05/zU8msI85Z3ZV4jNkc5liDafJAAuWz5nLxuQ7gIsC.png",
-//   "alternative_text": "hello screenshot",
+const userData = useCookie('userData')
+console.log(userData.value.type);
 
 const headers = [
   { title: 'Nomi', key: 'label' },
@@ -91,7 +96,7 @@ const deleteItem = (id) => {
   deleteDialog.value = true
 }
 const deleteItemConfirm = () => {
-  store.deleteBanner(deleteIndex.value)
+  store.deleteRole(deleteIndex.value)
     .then(() => {
       configStore.successToast('Banner o\'chirildi')
       deleteDialog.value = false
@@ -105,4 +110,5 @@ const deleteItemConfirm = () => {
 onMounted(() => {
   refresh()
 })
+
 </script>

@@ -1,32 +1,65 @@
 <template>
   <div>
     <div>
-      <!-- <pre>{{ store.top_banners }}</pre> -->
+
 
       <div class="d-flex gap-3  align-end justify-end mb-6 ">
         <VBtn class="" @click="$router.push('/top-banners/create')">
-          <VIcon icon="tabler-plus" /> Roli qo'shish
+          <VIcon icon="tabler-plus" /> qo'shish
         </VBtn>
       </div>
     </div>
-    <VDataTable :items="store.top_banners?.data" :headers="headers" :loading="load">
-      <!-- blog_name -->
-      <template #item.blog_name="{ item }">
-        <div class="py-1">
-          <VAvatar rounded :image="baseUrl + item.blog_name" class="categoryAvatar" />
+
+
+    <VDataTable :items="store.top_banners" :headers="headers" :loading="load">
+
+      <template #item.banners="{ item }">
+
+        <div class="">
+          <div @click="producttoggelData(item.top_id)" class="my-2 cursor-pointer">
+            Bannerlarni ko'rish
+            <VIcon icon="tabler-chevron-down" />
+
+          </div>
+          <Transition name="slide-fade">
+
+            <div class=" border rounded" v-if="toggle === item.top_id">
+              <div v-for="banner in item.banners" :key="banner.id"
+                class="pa-2 productContainer d-flex justify-space-between align-center">
+
+                <div>
+                  <VAvatar rounded :image="baseUrl + banner.image" class="categoryAvatar" />
+                  {{ banner.alternative_text }}
+                </div>
+
+                <div @click="deleteItem(banner.id, item.top_id)">
+
+                  <div class="h-100">
+                    <IconBtn>
+                      <VIcon icon="tabler-trash" color="error" />
+                    </IconBtn>
+
+                  </div>
+                </div>
+
+
+              </div>
+
+            </div>
+
+          </Transition>
+
+
         </div>
       </template>
 
 
       <template #item.actions="{ item }">
         <!-- action buttons -->
-        <!-- edit item -->
-        <IconBtn @click="$router.push(`/top-banners/edit/${item.id}`)" class="border mx-2">
-          <VIcon icon="tabler-edit" color="success" />
-        </IconBtn>
+
 
         <!-- delete item -->
-        <IconBtn @click="deleteItem(item.id)" class="border mx-2">
+        <IconBtn @click="deleteItem(item.top_id)" class="border mx-2">
           <VIcon icon="tabler-trash" color="error" />
         </IconBtn>
 
@@ -71,6 +104,7 @@ const configStore = useConfigStore()
 const baseUrl = import.meta.env.VITE_API_BASE_URL
 const isDialogVisible = ref(false)
 const itemData = ref({})
+const top_banner_id = ref(null)
 
 definePage({
   meta: {
@@ -78,19 +112,13 @@ definePage({
     subject: 'all',
   },
 })
-// "banner": "/storage/banner/2024-05/zU8msI85Z3ZV4jNkc5liDafJAAuWz5nLxuQ7gIsC.png",
-//   "alternative_text": "hello screenshot",
+const toggle = ref(null)
 
-
-
-// "top_name": "Hayit bayrami uchun chegirmalar",
-//   "blog_name": "/storage/banner/2024-05/aHFssiq711WEPXnldi69mSj885FG44jJbPDTfOaO.png",
-//     "blogs_text": "screenshot"
 
 const headers = [
-  { title: 'Blog rasmi', key: 'blog_name' },
-  { title: 'Blog text', key: 'blogs_text' },
-  { title: 'Nomi', key: 'top_name' },
+  { title: 'top name', key: 'name' },
+  { title: 'bannerlar', key: 'banners' },
+
   { title: 'Actions', key: 'actions' },
 ]
 
@@ -98,23 +126,70 @@ const refresh = () => {
   store.getTopBanners(store.page)
 }
 
-const deleteItem = (id) => {
+const deleteItem = (id, topBannerId) => {
   deleteIndex.value = id
+  top_banner_id.value = topBannerId
   deleteDialog.value = true
 }
 const deleteItemConfirm = () => {
-  store.deleteBanner(deleteIndex.value)
-    .then(() => {
-      configStore.successToast('Banner o\'chirildi')
-      deleteDialog.value = false
-      refresh()
-    })
-    .catch((error) => {
-      deleteDialog.value = false
-      configStore.errorToast(error.response._data.message)
-    })
+
+  if (top_banner_id.value) {
+
+    store.deleteBanner(top_banner_id.value, deleteIndex.value)
+      .then(() => {
+        configStore.successToast('Banner o\'chirildi')
+        deleteDialog.value = false
+        refresh()
+      })
+      .catch((error) => {
+        deleteDialog.value = false
+        top_banner_id.value = null
+        configStore.errorToast(error.response._data.message)
+      })
+  } else {
+    store.deleteTopBanner(deleteIndex.value)
+      .then(() => {
+        configStore.successToast('Banner o\'chirildi')
+        deleteDialog.value = false
+        refresh()
+      })
+      .catch((error) => {
+        deleteDialog.value = false
+        configStore.errorToast(error.response._data.message)
+      })
+  }
+
+
 }
 onMounted(() => {
   refresh()
 })
+
+const producttoggelData = (id) => {
+  console.log(id);
+  if (toggle.value === id) {
+    toggle.value = null
+  } else {
+    toggle.value = id
+  }
+
+}
 </script>
+
+
+<style>
+.slide-fade-enter-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  /* stylelint-disable-next-line order/properties-order */
+  opacity: 0;
+}
+</style>

@@ -35,10 +35,9 @@
 
         <!-- action buttons -->
 
-        <!-- edit item -->
-        <IconBtn @click="viewItem(item)" class="border mx-2" size="large">
-          <VIcon icon="tabler-eye" color="success" />
-        </IconBtn>
+
+
+
 
 
         <!-- edit item -->

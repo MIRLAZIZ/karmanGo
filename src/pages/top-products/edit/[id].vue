@@ -1,12 +1,12 @@
 <template>
   <div>
-    <AddEditRole />
+    <AddEdit />
 
   </div>
 </template>
 
 <script setup>
-import AddEditRole from '@/components/roles/AddEditRole.vue'
+import AddEdit from '@/components/top-product/AddEdit.vue'
 
 definePage({
   meta: {

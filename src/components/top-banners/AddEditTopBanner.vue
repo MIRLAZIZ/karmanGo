@@ -1,22 +1,25 @@
 <template>
   <div>
-    <h2> {{ $route.params.id ? 'Role tahrirlash' : 'Role qo\'shish' }}</h2>
-    <!-- {{ storeBanner.banners }} -->
+    <h2>Top banner qo'shish</h2>
+
     <!-- 👉 Form -->
-    <VForm ref="refForm" @submit.prevent="sendRole">
+    <VForm ref="refForm" @submit.prevent="sendTopBlog">
 
       <VRow>
-        <!-- name -->
-        <VCol cols="12" md="6">
-          <AppSelect v-model="topBannerData.blog_id" :rules="[requiredValidator]" label="Baner nomi"
-            :items="storeBanner.banners" item-title="alternative_text" item-value="id" />
 
-        </VCol>
         <VCol cols="12" md="6">
           <AppSelect v-model="topBannerData.top_id" label="top nomi" :rules="[requiredValidator]"
             :items="storeTopic.topics" item-title="name" item-value="id" />
 
         </VCol>
+
+        <!-- name -->
+        <VCol cols="12" md="6">
+          <AppSelect v-model="topBannerData.blog_id" :rules="[requiredValidator]" label="Baner nomi"
+            :items="storeBanner.banners" item-title="alternative_text" item-value="id" multiple />
+
+        </VCol>
+
 
 
         <VCol cols="12" class="d-flex justify-end">
@@ -56,40 +59,37 @@ const storeBanner = useBannersStore()
 const refForm = ref()
 const topBannerData = ref({
   top_id: null,
-  blog_id: null,
+  blog_id: [],
 })
 
 
-const sendRole = () => {
+const sendTopBlog = () => {
   refForm.value?.validate().then(({ valid }) => {
 
+
     if (valid) {
-
-      if (route) {
-        store.updateBanner(route, topBannerData.value).then(() => {
-          router.push({ name: 'top-banners' })
-            .then(() => {
-              storeConfig.successToast('Mavzu tahrirlandi')
-            })
-        })
-          .catch((err) => {
-            storeConfig.errorToast(err.response._data.message)
-          })
-
-      } else {
-        store.createBanner(topBannerData.value).then(() => {
-          router.push({ name: 'top-banners' })
-            .then(() => {
-              storeConfig.successToast('Mavzu qo\'shildi')
-            })
-        })
-          .catch((err) => {
-            storeConfig.errorToast(err.response._data.message)
-          })
+      let data = {
+        top_id: topBannerData.value.top_id,
+        blogs: []
       }
+      topBannerData.value.blog_id.forEach((item) => {
+        data.blogs.push({ blog_id: item })
 
+      })
 
+      store.createBanner(data).then(() => {
+        router.push({ name: 'top-banners' })
+          .then(() => {
+            storeConfig.successToast('top banner qo\'shildi')
+          })
+      })
+        .catch((err) => {
+          storeConfig.errorToast(err.response._data.message)
+        })
     }
+
+
+
   })
 }
 

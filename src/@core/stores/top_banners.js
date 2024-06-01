@@ -22,20 +22,23 @@ export const useTopBannersStore = defineStore("top_banners", {
             })
         },
 
-        async updateBanner(id, data) {
-            return await $api(`/api/top_blog/update/${id}`, {
-                method: "POST",
-                body: data
-            })
-        },
-        async deleteBanner(id) {
-            return await $api(`/api/top_blog/delete/${id}`, {
+        // async updateBanner(id, data) {
+        //     return await $api(`/api/top_blog/update/${id}`, {
+        //         method: "POST",
+        //         body: data
+        //     })
+        // },
+        async deleteBanner(topBannerId, id) {
+            return await $api(`/api/deleteTopsBlog/${topBannerId}/${id}`, {
                 method: "DELETE"
             })
         },
-        async fechtBannerOne(id) {
-            return await $api(`/api/top_blog/${id}`)
-        },
+        async deleteTopBanner(id) {
+            return await $api(`/api/deleteTopAndBlogs/${id}`, {
+                method: "DELETE"
+            })
+        }
+
 
     },
 });

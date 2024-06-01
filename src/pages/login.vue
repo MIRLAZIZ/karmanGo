@@ -11,6 +11,9 @@ import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
 import { useAbility } from '@casl/vue'
+import { $api } from '@/utils/api'
+import { useCookie } from '@/@core/composable/useCookie'
+import { useConfigStore } from '@/@core/stores/config'
 // definePage({ meta: { layout: 'blank' } })
 definePage({
   meta: {
@@ -20,11 +23,11 @@ definePage({
 })
 
 const form = ref({
-  email: '',
+  phone: '',
   password: '',
-  remember: false,
 })
 
+const store = useConfigStore()
 // const ability = useAbility()
 const ability = useAbility()
 
@@ -52,20 +55,53 @@ const sendLogin = () => {
           subject: 'all'
         },
       ]
-      let token = '789|yjFr06EZXSxptVAPJIMZFDVo26SAxtMhlMGPLgkd'
-      let user = {
-        name: 'Admin',
-        email: 'admin@vuexy',
-        id: 1,
-        role: 'admin',
-      }
-      useCookie('userAbilityRules').value = abilityRules
-      ability.update(abilityRules)
-      useCookie('userData').value = user
-      useCookie('accessToken').value = token
-      router.push('/')
 
-      console.log('valid')
+
+      $api('/api/login', {
+        method: 'POST',
+        body: form.value
+      })
+        .then((res) => {
+
+
+          // "user_id": 1,
+          // "user_name": "Karimov Hakimjon",
+          // "status": true,
+          // "message": "User Logged In Successfully",
+          // "access_token": "21|NCczCAsLgqsSPdks6mM7jPJmI043nVepaMv0IPru1c325c1c",
+          // "refresh_token": "22|zQ1zMX1rvzZjIlR7W20qLUGcn3iuYIusR2I143dhbd4480c6",
+          // "token_type": "Bearer"
+
+
+          useCookie('userAbilityRules').value = abilityRules
+          ability.update(abilityRules)
+          useCookie('userData').value = res.user
+          useCookie('accessToken').value = res.token
+          useCookie('refreshToken').value = res.refresh_token
+          router.push('/').then(() => {
+            store.successToast()
+          })
+
+
+
+
+        })
+
+
+      // let token = '789|yjFr06EZXSxptVAPJIMZFDVo26SAxtMhlMGPLgkd'
+      // let user = {
+      //   name: 'Admin',
+      //   email: 'admin@vuexy',
+      //   id: 1,
+      //   role: 'admin',
+      // }
+      // useCookie('userAbilityRules').value = abilityRules
+      // ability.update(abilityRules)
+      // useCookie('userData').value = user
+      // useCookie('accessToken').value = token
+      // router.push('/')
+
+      // console.log('valid')
 
     } else {
       console.log('invalid')
@@ -107,23 +143,23 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
             <VRow>
               <!-- email -->
               <VCol cols="12">
-                <AppTextField v-model="form.email" autofocus label="Email" type="email" placeholder="johndoe@email.com"
-                  :rules="[requiredValidator, emailValidator]" />
+                <AppTextField v-model="form.phone" autofocus type="number" placeholder="phone"
+                  :rules="[requiredValidator]" />
               </VCol>
 
               <!-- password -->
               <VCol cols="12">
                 <AppTextField v-model="form.password" label="Password" placeholder="············"
                   :type="isPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'" :rules="[passwordValidator]"
+                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'" :rules="[requiredValidator]"
                   @click:append-inner="isPasswordVisible = !isPasswordVisible" />
 
-                <div class="d-flex align-center flex-wrap justify-space-between mt-2 mb-4">
+                <!-- <div class="d-flex align-center flex-wrap justify-space-between mt-2 mb-4">
                   <VCheckbox v-model="form.remember" label="Remember me" />
                   <a class="text-primary ms-2 mb-1" href="#">
                     Forgot Password?
                   </a>
-                </div>
+                </div> -->
 
                 <VBtn block type="submit">
                   Login

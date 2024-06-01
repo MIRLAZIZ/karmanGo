@@ -6,7 +6,8 @@ export const useRolesStore = defineStore("roles", {
 
     state: () => ({
         roles: [],
-        page: 1
+        page: 1,
+        permissions: []
     }),
 
     actions: {
@@ -40,6 +41,26 @@ export const useRolesStore = defineStore("roles", {
         async getOneRole(id) {
             return await $api(`/api/role/${id}`)
         },
+
+        // async fetchPermissons() {
+        //     return await $api('/api/allContAction')
+        //         .then((res) => {
+        //             this.permissions = res
+        //         })
+        // },
+        async createPermssions(id, data) {
+            return await $api(`/api/permission/store/${id}`, {
+                method: 'POST',
+                body: data
+            })
+        },
+
+        async fetchPermissonsOne(id) {
+            return await $api(`/api/permission/${id}`)
+                .then((res) => {
+                    this.permissions = res
+                })
+        }
 
     }
 

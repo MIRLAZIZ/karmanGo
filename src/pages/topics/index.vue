@@ -8,7 +8,7 @@
         </VBtn>
       </div>
     </div>
-    <VDataTable :items="store.topics?.data" :headers="headers" :loading="load">
+    <VDataTable :items="store.topics" :headers="headers" :loading="load">
 
 
       <template #item.actions="{ item }">

@@ -11,7 +11,7 @@ export const useTopicsStore = defineStore("topics", {
 
   actions: {
 
-    async fetchTopics(page) {
+    async fetchTopics() {
 
       return await $api(`/api/top`)
         .then((res) => {

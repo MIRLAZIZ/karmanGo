@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AddEdit: typeof import('./src/components/top-product/AddEdit.vue')['default']
     AddEditBanner: typeof import('./src/components/banners/AddEditBanner.vue')['default']
     AddEditBranches: typeof import('./src/components/branches/AddEditBranches.vue')['default']
     AddEditPost: typeof import('./src/components/posts/AddEditPost.vue')['default']

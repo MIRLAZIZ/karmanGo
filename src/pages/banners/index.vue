@@ -1,6 +1,9 @@
 <template>
   <div>
     <div>
+      <pre>
+        {{ store.banners }}
+      </pre>
 
       <div class="d-flex gap-3  align-end justify-end mb-6 ">
         <VBtn class="" @click="$router.push('/banners/create')">
@@ -8,7 +11,7 @@
         </VBtn>
       </div>
     </div>
-    <VDataTable :items="store.banners?.data" :headers="headers" :loading="load">
+    <VDataTable :items="store.banners" :headers="headers" :loading="load">
 
       <template #item.banner="{ item }">
         <div class="py-1">

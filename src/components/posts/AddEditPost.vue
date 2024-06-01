@@ -97,7 +97,7 @@ const sendPost = () => {
       if (route) {
 
         store.updateCategory(route, formdata).then(() => {
-          router.push('/')
+          router.push('/categories')
             .then(() => {
               storeConfig.successToast('Kategoriya qo\'shildi')
             })
@@ -108,7 +108,7 @@ const sendPost = () => {
         })
       } else {
         store.CreateCategory(formdata).then((res) => {
-          router.push('/')
+          router.push('/categories')
             .then(() => {
               setTimeout(() => {
                 storeConfig.successToast('Kategoriya tahrirlandi')
@@ -129,7 +129,7 @@ const sendPost = () => {
 // close page method
 const closeNavigationDrawer = () => {
   refForm.value?.resetValidation()
-  router.push('/')
+  router.push('/categories')
 
 }
 
