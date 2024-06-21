@@ -11,8 +11,8 @@ import AddEditUser from '@/components/users/AddEditUser.vue'
 
 definePage({
   meta: {
-    action: 'read',
-    subject: 'all',
+    action: "store",
+    subject: 'UserController'
   },
 })
 

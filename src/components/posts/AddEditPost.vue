@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <h2 class="mb-5">{{ $route.params.id ? 'Edit post' : 'Kategorya qo\'shish' }}</h2>
+    <h2 class="mb-5">{{ $route.params.id ? 'Редактирование категории' : 'Добавить категорию' }}</h2>
 
     <!-- 👉 Form -->
     <VForm ref="refForm" @submit.prevent="sendPost">
@@ -10,11 +10,14 @@
         <VCol cols="12" class="">
           <div>
             <img :src="image" alt="" class="categoryImg" v-if="image">
-            <div class="categoryImg border mb-4 d-flex align-center justify-center" v-else> Kategoriya rasmi</div>
+            <div class="categoryImg border mb-4 d-flex align-center justify-center" v-else>
+              <p class="text-center"> Изображение категории</p>
+            </div>
 
           </div>
-          <label for="image" class="border d-block  p-3  d-flex align-center justify-center labelHeight">
-            {{ $route.params.id ? 'Rasmni o\'zgartirish' : 'Yuklash' }}
+          <label for="image"
+            class="border d-block  p-3  d-flex align-center justify-center text-center labelHeight bg-primary">
+            {{ $route.params.id ? 'Изменить изображение' : 'Загрузка' }}
           </label>
 
           <input type="file" @change="onFileChange" id="image" class="d-none" accept="image/png, image/jpeg">
@@ -24,28 +27,28 @@
 
         <!-- 👉 category name uz -->
         <VCol cols="12" class="" md="6">
-          <AppTextField v-model="categoryData.name_uz" :rules="[requiredValidator]" label="Kategoriya nomi uz" />
+          <AppTextField v-model="categoryData.name" :rules="[requiredValidator]" label="Название категории" />
         </VCol>
 
         <!-- 👉 category name  ru-->
-        <VCol cols="12" class="" md="6">
+        <!-- <VCol cols="12" class="" md="6">
           <AppTextField v-model="categoryData.name_ru" :rules="[requiredValidator]" label="Kategoriya nomi ru" />
-        </VCol>
+        </VCol> -->
         <!-- 👉 category name en -->
-        <VCol cols="12" class="" md="6">
+        <!-- <VCol cols="12" class="" md="6">
           <AppTextField v-model="categoryData.name_en" :rules="[requiredValidator]" label="Kategoriya nomi en" />
-        </VCol>
+        </VCol> -->
 
 
 
         <!-- btn group -->
         <VCol cols="12" class="d-flex justify-end">
           <VBtn variant="outlined" color="secondary" @click="closeNavigationDrawer">
-            Cancel
+            Отмена
           </VBtn>
 
           <VBtn type="submit" class="ml-3">
-            Submit
+            {{ $route.params.id ? 'Сохранить' : 'Добавить' }}
           </VBtn>
         </VCol>
       </VRow>
@@ -67,9 +70,9 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL
 
 
 const categoryData = ref({
-  name_uz: null,
-  name_ru: null,
-  name_en: null,
+  name: null,
+  // name_ru: null,
+  // name_en: null,
   image: null,
 })
 // img object URL
@@ -89,9 +92,9 @@ const sendPost = () => {
   refForm.value?.validate().then(({ valid }) => {
     if (valid) {
       const formdata = new FormData()
-      formdata.append('name_uz', categoryData.value.name_uz)
-      formdata.append('name_ru', categoryData.value.name_ru)
-      formdata.append('name_en', categoryData.value.name_en)
+      formdata.append('name', categoryData.value.name)
+      // formdata.append('name_ru', categoryData.value.name_ru)
+      // formdata.append('name_en', categoryData.value.name_en)
       formdata.append('image', categoryData.value.image)
 
       if (route) {
@@ -103,23 +106,30 @@ const sendPost = () => {
             })
 
         }).catch((err) => {
-          console.log(err.response);
-          storeConfig.errorToast(err.response._data.message)
+          let error = Object.keys(err.response._data.message).map(key => err.response._data.message[key])
+          console.log(error);
+
+
+
+          storeConfig.errorToast(error.map(key => {
+            return key
+          }))
         })
       } else {
         store.CreateCategory(formdata).then((res) => {
           router.push('/categories')
             .then(() => {
-              setTimeout(() => {
-                storeConfig.successToast('Kategoriya tahrirlandi')
 
-              }, 1000)
+              storeConfig.successToast('Kategoriya tahrirlandi')
+
+
             })
 
 
         })
           .catch((err) => {
-            storeConfig.errorToast(err.response._data.message)
+            // storeConfig.errorToast(Object.keys(err.response._data.message).map(key => err.response._data.message[key])[0]
+            // )
           })
       }
     }
@@ -137,9 +147,9 @@ const closeNavigationDrawer = () => {
 const getData = () => {
   if (route) {
     store.getOneCategory(route).then(res => {
-      categoryData.value.name_en = res.result.name_en
-      categoryData.value.name_ru = res.result.name_ru
-      categoryData.value.name_uz = res.result.name_uz
+      categoryData.value.name = res.result.name
+      // categoryData.value.name_ru = res.result.name_ru
+      // categoryData.value.name_uz = res.result.name_uz
       image.value = baseUrl + res.result.image
     }
     )
@@ -179,7 +189,7 @@ onMounted(() => {
   /* stylelint-disable-next-line liberty/use-logical-spec */
   height: 40px !important;
   border-radius: 5px;
-  box-shadow: 5px 10px 20px 5px #7367F0 inset;
+  box-shadow: 5px 10px 20px 5px #EF233C inset;
   /* stylelint-disable-next-line order/properties-order */
   background: #7367F0;
   color: #fff;

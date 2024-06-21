@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2> {{ $route.params.id ? 'Foydalanuvchi tahrirlash' : 'Foydalanuvchi qo\'shish' }}</h2>
+    <h2> {{ $route.params.id ? 'Редактирование пользователя' : 'Добавить пользователя ' }}</h2>
 
     <VForm ref="refForm" @submit.prevent="sendUser">
       <VRow>
@@ -13,12 +13,13 @@
             <img :src="image" alt="" class="categoryImg" v-if="image">
 
             <div class="text-center border mb-4 d-flex align-center categoryImg justify-center" v-else>
-              Maxsulot rasmini yuklang </div>
+              <VIcon icon="tabler-user-circle" size="80" />
+            </div>
           </div>
 
           <label for="index" class="d-block  d-flex align-center justify-center labelHeight text-center bg-primary">
 
-            Yuklash</label>
+            {{ $route.params.id ? 'Изменить изображение' : 'Загрузка' }}</label>
           <input type="file" id="index" class="d-none" accept="image/png, image/jpeg, image/jpg, image/svg"
             @change="onFileChange($event, index)">
 
@@ -27,38 +28,51 @@
 
         <!-- name  -->
         <VCol cols="12" md="6">
-          <AppTextField v-model="userData.name" :rules="[requiredValidator]" label="Foydalanuvchi nomi" />
+          <AppTextField v-model="userData.name" :rules="[requiredValidator]" label="Наименование" />
         </VCol>
 
         <!-- role_id -->
         <VCol cols="12" md="6">
-          <AppSelect v-model="userData.role_id" :items="store.roles.data" :rules="[requiredValidator]" label="Roli"
+          <AppSelect v-model="userData.role_id" :items="store.roles.data" :rules="[requiredValidator]" label="роль"
             item-title='label' item-value='id' />
+        </VCol>
+
+        <!-- password -->
+        <VCol cols="12" md="6" v-if="!$route.params.id">
+          <AppTextField v-model="userData.password" :rules="[requiredValidator]"
+            :type="isPasswordVisible ? 'text' : 'password'" label="Пароль"
+            :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+            @click:append-inner="isPasswordVisible = !isPasswordVisible" />
         </VCol>
 
 
         <!-- password -->
-        <VCol cols="12" md="6">
-          <AppTextField v-model="userData.password" :rules="[requiredValidator, passwordValidator]"
-            :type="isPasswordVisible ? 'text' : 'password'" label="Parol"
+        <VCol cols="12" md="6" v-else>
+          <AppTextField v-model="userData.password" :type="isPasswordVisible ? 'text' : 'password'" label="Пароль"
             :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
             @click:append-inner="isPasswordVisible = !isPasswordVisible" />
+        </VCol>
+        <!--  new password -->
+        <VCol cols="12" md="6" v-if="$route.params.id">
+          <AppTextField v-model="userData.newPassword" :type="isNewPassword ? 'text' : 'password'" label="Пароль"
+            :append-inner-icon="isNewPassword ? 'tabler-eye-off' : 'tabler-eye'"
+            @click:append-inner="isNewPassword = !isNewPassword" />
         </VCol>
 
         <!-- phone  -->
         <VCol cols="12" md="6">
           <AppTextField v-model="userData.phone"
             :rules="[requiredValidator, lengthValidator(userData.phone, 12), maxlengthValidator(userData.phone, 12)]"
-            label="Telefon raqam" type="number" />
+            label="Номер телефона" type="number" />
         </VCol>
 
 
         <VCol cols="12" class="d-flex justify-end">
           <VBtn variant="outlined" color="secondary" @click="closeNavigationDrawer">
-            Cancel
+            Отмена
           </VBtn>
           <VBtn type="submit" class="ml-3">
-            Submit
+            {{ $route.params.id ? 'Сохранить' : 'Добавить' }}
           </VBtn>
         </VCol>
 
@@ -83,9 +97,11 @@ const userData = ref({
   role_id: null,
   password: null,
   phone: null,
-  image: null
+  image: null,
+  newPassword: null
 
 })
+const isNewPassword = ref(false)
 
 const image = ref(null)
 const router = useRouter()
@@ -116,14 +132,44 @@ const sendUser = () => {
 
     if (valid) {
 
-      store.createUser(formData).then(() => {
-        router.push('/users')
-          .then(() => {
-            storeConfig.successToast('Foydalanuvchi qo\'shildi')
+
+      if (route.params.id) {
+        store.updateUser(route.params.id, formData).then(() => {
+          router.push('/users')
+            .then(() => {
+              storeConfig.successToast()
+            })
+        }).catch((err) => {
+
+          if (err.response.status >= 500) {
+            storeConfig.errorToast('На сервере произошла ошибка')
+          } else {
+            let errorData = Object.keys(err.response._data.message).map(key => err.response._data.message[key])
+            errorData.forEach((item) => {
+              storeConfig.errorToast(item)
+            })
+
+          }
+
+        })
+
+      }
+      else {
+
+        store.createUser(formData).then(() => {
+          router.push('/users')
+            .then(() => {
+              storeConfig.successToast('Foydalanuvchi qo\'shildi')
+            })
+        }).catch((err) => {
+
+          let errorData = Object.keys(err.response._data.message).map(key => err.response._data.message[key])
+          errorData.forEach((item) => {
+            storeConfig.errorToast(item)
           })
-      }).catch((err) => {
-        storeConfig.errorToast(err.response._data.message)
-      })
+        })
+      }
+
     }
 
   })
@@ -135,6 +181,7 @@ const closeNavigationDrawer = () => {
 
 
 onMounted(() => {
+
   store.fetchRoles()
 
   if (route.params.id) {
@@ -142,8 +189,10 @@ onMounted(() => {
       userData.value = res.result
       if (userData.value.image) {
         image.value = baseUrl + res.result.image
+        userData.password = null
+        userData.value.image = null
+
       }
-      userData.value.image = null
     })
   }
 
@@ -170,7 +219,7 @@ onMounted(() => {
   /* stylelint-disable-next-line liberty/use-logical-spec */
   height: 40px !important;
   border-radius: 5px;
-  box-shadow: 5px 10px 20px 5px #7367F0 inset;
+  box-shadow: 5px 10px 20px 5px #EF233C inset;
   /* stylelint-disable-next-line order/properties-order */
   background: #7367F0;
   color: #fff;

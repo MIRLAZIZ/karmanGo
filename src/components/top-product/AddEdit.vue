@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2> top maxsulotlar</h2>
+    <h2> Добавить топ продукты</h2>
 
     <!-- 👉 Form -->
     <VForm ref="refForm" @submit.prevent="sendProductstop">
@@ -8,7 +8,7 @@
       <VRow>
         <!-- name -->
         <VCol cols="12" md="6">
-          <AppSelect v-model="topProductData.top_id" :rules="[requiredValidator]" label="top nomi"
+          <AppSelect v-model="topProductData.top_id" :rules="[requiredValidator]" label="Название топа"
             :items="storeTopic.topics" item-title="name" item-value="id" />
 
         </VCol>
@@ -28,7 +28,7 @@
 
                 <VAvatar rounded :image="baseUrl + item.image" class="categoryAvatar me-3" />
 
-                {{ item.name_uz }}
+                {{ item.name }}
 
               </div>
 
@@ -59,10 +59,10 @@
 
         <VCol cols="12" class="d-flex justify-end">
           <VBtn variant="outlined" color="secondary" @click="closeNavigationDrawer">
-            Cancel
+            Отмена
           </VBtn>
           <VBtn type="submit" class="ml-3">
-            {{ $route.params.id ? 'Saqlash' : 'Qo\'shish' }}
+            Сохранить
           </VBtn>
         </VCol>
       </VRow>
@@ -101,8 +101,8 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL
 const headers = [
   //{ title: 'Check', key: 'check' },
   {
-    title: 'Nomi',
-    key: 'name_uz',
+    title: 'Названия продуктов',
+    key: 'name',
 
   },
 

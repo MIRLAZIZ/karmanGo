@@ -1,4 +1,7 @@
 <script setup>
+import { useCategorysStore } from '@/@core/stores/categorys';
+
+const store = useCategorysStore()
 const props = defineProps({
   isDialogVisible: {
     type: Boolean,
@@ -14,6 +17,7 @@ const props = defineProps({
   }
 })
 const baseUrl = import.meta.env.VITE_API_BASE_URL
+const categoryName = ref(null)
 
 const emit = defineEmits([
   'submit',
@@ -22,6 +26,17 @@ const emit = defineEmits([
 const dialogModelValueUpdate = val => {
   emit('update:isDialogVisible', val)
 }
+
+watch(() => props.itemData, () => {
+  if (props.itemData.category_id) {
+    store.getOneCategory(props.itemData.category_id).then(res => {
+      console.log(res);
+
+      categoryName.value = res.result.name
+
+    })
+  }
+}, { immediate: true })
 
 
 </script>
@@ -39,63 +54,48 @@ const dialogModelValueUpdate = val => {
         <VRow>
           <!-- 👉 category img -->
           <VCol cols="12">
-            <img :src="baseUrl + itemData.image" alt="" class="">
+            <VImg :src="baseUrl + itemData.image" alt="" class="rounded " width="30%" />
 
           </VCol>
           <VCol>
-            <h3>Maxsulot ma'lumotlari</h3>
 
-          </VCol>
 
-          <!-- 👉 category name uz -->
-          <VCol cols="12" class="border border rounded">
-            <h4>Maxsulot nomi</h4><br>
 
-            <p> <b class="mr-1">O'zbekcha: </b> <span>{{ itemData.name_uz }}</span>
-            </p>
-            <p>
-              <b class="mr-1">Ruscha: </b> <span>{{ itemData.name_ru }}</span>
-            </p>
 
-            <p> <b class="mr-1">English: </b> <span>{{ itemData.name_en }}</span></p>
+
             <hr class="my-3">
 
 
-            <div v-show="itemData.description_uz" class="mt-3">
+            <div class="mt-3">
+              <p> <b class="mr-1"> Название: </b> <span>{{ itemData.name }}</span>
+              </p>
+              <p> <b class="mr-1">Категория:</b> <span>{{ categoryName }}</span> </p>
 
-              <p> <b class="mr-1"> Narxi : </b>
-              <pre>{{ itemData }}</pre>
+
+              <p> <b class="mr-1"> Цена: </b>
+                {{ itemData.price }}
               </p>
               <p>
-                <b class="mr-1">Miqdori: </b> <span>{{ itemData.quantity }}</span>
+                <b class="mr-1">Количество: </b> <span>{{ itemData.quantity }}</span>
               </p>
 
-              <p> <b class="mr-1">Qolgan miqdori: </b> <span>{{ itemData.description_en }}</span>
+              <p> <b class="mr-1">Оставшееся количество: </b> <span>{{ itemData.quantity_rest }}</span>
               </p>
-              <p> <b>Chegirma</b> <span>{{ itemData.discount }}</span> </p>
-              <p> <b>status</b> <span>{{ itemData.status }}</span> </p>
-              <hr class="my-3">
+              <p> <b class="mr-1">Скидка:</b> <span>{{ itemData.discount }}</span> </p>
+              <p> <b class="mr-1">Статус:</b> <span>{{ itemData.status }}</span> </p>
+              <p> <b class="mr-1">Тип:</b> <span>{{ itemData.product_type }}</span> </p>
+              <p> <b class="mr-1">Детали продукта:</b>
+                <span>{{ itemData.details_of_product ? itemData.details_of_product : 'no details' }}</span>
+              </p>
+              <p> <b class="mr-1">Описание:</b> <span>{{ itemData.description ? itemData.description : 'no description'
+                  }}</span>
+              </p>
 
 
             </div>
 
 
 
-            <div v-show="itemData.description_uz" class="mt-3">
-
-              <h4>Maxsulot nomi</h4>
-              <p> <b class="mr-1">O'zbekcha: </b> <span>{{ itemData.description_uz }}</span>
-              </p>
-              <p>
-                <b class="mr-1">Ruscha: </b> <span>{{ itemData.description_ru }}</span>
-              </p>
-
-              <p> <b class="mr-1">English: </b> <span>{{ itemData.description_en }}</span>
-              </p>
-              <hr class="my-3">
-
-
-            </div>
 
 
 

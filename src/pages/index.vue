@@ -8,8 +8,8 @@ import ViewsProduct from '@/components/products/ViewsProduct.vue';
 
 definePage({
   meta: {
-    action: 'read',
-    subject: 'all',
+    action: "index",
+    subject: 'ProductController'
   },
 
 
@@ -25,12 +25,14 @@ const isDialogVisible = ref(false)
 const itemData = ref({})
 
 // headers
+
+
 const headers = [
-  { title: 'rasmi', key: 'image' },
-  { title: 'nomi', key: 'name_uz' },
-  { title: 'tavsifi', key: 'description_uz' },
-  { title: 'narxi', key: 'price' },
-  { title: 'Actions', key: 'actions' },
+  { title: 'картина', key: 'image' },
+  { title: 'Наименование', key: 'name' },
+  { title: 'описание', key: 'description' },
+  { title: 'расходы', key: 'price' },
+  { title: 'Действия', key: 'actions' },
 
 ]
 
@@ -81,13 +83,26 @@ const viewItem = (item) => {
 
     <div class="d-flex gap-3  align-end justify-end mb-6 ">
       <!-- add post -->
-      <VBtn class="" @click="$router.push('/product/create')">
-        <VIcon icon="tabler-plus" /> Add post
+      <VBtn class="" @click="$router.push('/product/create')" v-if="$can('store', 'ProductController')">
+        <VIcon icon="tabler-plus" /> добавить
       </VBtn>
     </div>
 
 
     <VDataTable v-if="store.products?.data" :headers="headers" :items="store.products.data" class="text-no-wrap">
+      <!-- tabel header action  permission template  -->
+
+      <!-- <template #headers="{ actions }">
+        {{ actions }}gdfgfsd
+      </template> -->
+      <template #item.description="{ item }">
+        <p v-if="item?.description">
+          {{ item.description.length > 50 ? item?.description.substring(0, 50) + '...' : item?.description }}
+        </p>
+        <p v-else>-</p>
+
+
+      </template>
 
 
       <!-- image  -->
@@ -110,7 +125,8 @@ const viewItem = (item) => {
 
 
         <!-- edit item -->
-        <IconBtn @click="$router.push(`/product/edit/${item.id}`)" class="border mx-2" size="large">
+        <IconBtn @click="$router.push(`/product/edit/${item.id}`)" class="border mx-2" size="large"
+          v-if="$can('update', 'ProductController')">
           <VIcon icon="tabler-edit" color="success" />
         </IconBtn>
 
@@ -118,7 +134,10 @@ const viewItem = (item) => {
 
 
         <!-- delete item -->
-        <IconBtn @click="deleteItem(item.id)" class="border " size="large">
+        <!-- permission can -->
+
+
+        <IconBtn @click="deleteItem(item.id)" v-if="$can('destroy', 'ProductController')" class="border " size="large">
           <VIcon icon="tabler-trash" color="error" />
         </IconBtn>
 

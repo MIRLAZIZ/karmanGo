@@ -11,8 +11,8 @@ import AddEditBanner from '@/components/banners/AddEditBanner.vue'
 
 definePage({
   meta: {
-    action: 'read',
-    subject: 'all',
+    action: "create",
+    subject: 'BlogController'
   }
 })
 

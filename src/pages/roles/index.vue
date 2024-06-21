@@ -4,11 +4,13 @@
 
       <div class="d-flex gap-3  align-end justify-end mb-6 ">
         <VBtn class="" @click="$router.push('/roles/create')">
-          <VIcon icon="tabler-plus" /> Roli qo'shish
+          <VIcon icon="tabler-plus" /> добавить
         </VBtn>
       </div>
     </div>
     <VDataTable :items="store.roles?.data" :headers="headers" :loading="load">
+
+
 
 
       <template #item.actions="{ item }">
@@ -21,9 +23,9 @@
         </IconBtn>
 
         <!-- edit item -->
-        <IconBtn @click="$router.push(`/roles/edit/${item.id}`)" class="border mx-2">
+        <!-- <IconBtn @click="$router.push(`/roles/edit/${item.id}`)" class="border mx-2">
           <VIcon icon="tabler-edit" color="success" />
-        </IconBtn>
+        </IconBtn> -->
 
         <!-- delete item -->
         <IconBtn @click="deleteItem(item.id)" class="border mx-2">
@@ -82,9 +84,9 @@ const userData = useCookie('userData')
 console.log(userData.value.type);
 
 const headers = [
-  { title: 'Nomi', key: 'label' },
-  { title: 'Role', key: 'name' },
-  { title: 'Actions', key: 'actions' },
+  { title: 'Наименование', key: 'label' },
+  { title: 'Роль', key: 'name' },
+  { title: 'Действия', key: 'actions' },
 ]
 
 const refresh = () => {

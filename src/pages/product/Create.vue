@@ -10,8 +10,8 @@ import AddEditProduct from '@/components/products/AddEditProducts.vue'
 
 definePage({
   meta: {
-    action: 'read',
-    subject: 'all',
+    action: "store",
+    subject: 'ProductController'
   },
 
 

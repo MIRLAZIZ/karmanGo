@@ -35,26 +35,161 @@ const router = useRouter()
 
 const refLogin = ref()
 
+const permissions = [
+  {
+    action: "index",
+    subject: 'CategoryController'
+  },
+  {
+    action: "store",
+    subject: 'CategoryController'
+  },
+  {
+    action: "destroy",
+    subject: 'CategoryController'
+  },
+  {
+    action: "update",
+    subject: 'CategoryController'
+  },
+  {
+    action: "index",
+    subject: 'ProductController'
+  },
+  {
+    action: "store",
+    subject: 'ProductController'
+  },
+  {
+    action: "destroy",
+    subject: 'ProductController'
+  },
+  {
+    action: "update",
+    subject: 'ProductController'
+  },
+  {
+    action: "index",
+    subject: 'BranchController'
+  },
+  {
+    action: "store",
+    subject: 'BranchController'
+  },
+  {
+    action: "destroy",
+    subject: 'BranchController'
+  },
+  {
+    action: "update",
+    subject: 'BranchController'
+  },
+
+  {
+    action: "index",
+    subject: 'UserController'
+  },
+  {
+    action: "store",
+    subject: 'UserController'
+  },
+  {
+    action: "destroy",
+    subject: 'UserController'
+
+  },
+  {
+    action: "update",
+    subject: 'UserController'
+  },
+  {
+    action: "index",
+    subject: 'BlogController'
+
+  },
+  {
+    action: "create",
+    subject: 'BlogController'
+  },
+  {
+    action: "destroy",
+    subject: 'BlogController'
+  },
+  {
+    action: "update",
+    subject: 'BlogController'
+  },
+  {
+    action: "index",
+    subject: 'TopController'
+
+
+  },
+  {
+    action: "store",
+    subject: 'TopController'
+  },
+
+
+  {
+    action: "destroy",
+    subject: 'TopController'
+  },
+  {
+    action: "update",
+    subject: 'TopController'
+
+  },
+  {
+    action: "index",
+    subject: 'TopProductController'
+  },
+  {
+    action: "store",
+    subject: 'TopProductController'
+  },
+  {
+    action: "deleteTopsProduct",
+    subject: 'TopProductController'
+  },
+  {
+    action: "index",
+    subject: 'TopBlogController'
+  },
+  {
+    action: "store",
+    subject: 'TopBlogController'
+  },
+  {
+    action: "allOrders",
+    subject: 'ProfileController'
+  },
+  {
+    action: 'read',
+    subject: 'all',
+  }
+]
+
 const sendLogin = () => {
 
   refLogin.value.validate().then(({ valid: isValid }) => {
     if (isValid) {
-      let abilityRules = [
-        //   {
-        //   action: 'manage',
-        //   subject: 'all',
+      // let abilityRules = [
+      //   //   {
+      //   //   action: 'manage',
+      //   //   subject: 'all',
 
-        // },
-        {
-          action: 'create',
-          subject: 'all'
-        },
+      //   // },
+      //   {
+      //     action: 'create',
+      //     subject: 'all'
+      //   },
 
-        {
-          action: 'read',
-          subject: 'all'
-        },
-      ]
+      //   {
+      //     action: 'read',
+      //     subject: 'all'
+      //   },
+      // ]
 
 
       $api('/api/login', {
@@ -63,15 +198,7 @@ const sendLogin = () => {
       })
         .then((res) => {
 
-
-          // "user_id": 1,
-          // "user_name": "Karimov Hakimjon",
-          // "status": true,
-          // "message": "User Logged In Successfully",
-          // "access_token": "21|NCczCAsLgqsSPdks6mM7jPJmI043nVepaMv0IPru1c325c1c",
-          // "refresh_token": "22|zQ1zMX1rvzZjIlR7W20qLUGcn3iuYIusR2I143dhbd4480c6",
-          // "token_type": "Bearer"
-
+          let abilityRules = res.user.type === 'admin' ? permissions : res.permissions
 
           useCookie('userAbilityRules').value = abilityRules
           ability.update(abilityRules)
@@ -81,27 +208,14 @@ const sendLogin = () => {
           router.push('/').then(() => {
             store.successToast()
           })
-
-
-
-
+        })
+        .catch((err) => {
+          console.log(err.response);
+          store.errorToast(err.response._data.error)
         })
 
 
-      // let token = '789|yjFr06EZXSxptVAPJIMZFDVo26SAxtMhlMGPLgkd'
-      // let user = {
-      //   name: 'Admin',
-      //   email: 'admin@vuexy',
-      //   id: 1,
-      //   role: 'admin',
-      // }
-      // useCookie('userAbilityRules').value = abilityRules
-      // ability.update(abilityRules)
-      // useCookie('userData').value = user
-      // useCookie('accessToken').value = token
-      // router.push('/')
 
-      // console.log('valid')
 
     } else {
       console.log('invalid')
@@ -123,70 +237,51 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
           <VImg max-width="505" :src="authThemeImg" class="auth-illustration mt-16 mb-2" />
         </div>
 
-        <VImg class="auth-footer-mask" :src="authThemeMask" />
+        <!-- <VImg class="auth-footer-mask" :src="authThemeMask" /> -->
       </div>
     </VCol>
+
+
+
+
 
     <VCol cols="12" md="4" class="auth-card-v2 d-flex align-center justify-center">
       <VCard flat :max-width="500" class="mt-12 mt-sm-0 pa-4">
         <VCardText>
-          <VNodeRenderer :nodes="themeConfig.app.logo" class="mb-6" />
-          <h4 class="text-h4 mb-1">
+          <VNodeRenderer :nodes="themeConfig.app.logo" />
+          <!-- <h4 class="text-h4 mb-1">
             Welcome to <span class="text-capitalize">{{ themeConfig.app.title }}</span>! 👋🏻
-          </h4>
+          </h4> -->
           <p class="mb-0">
-            Please sign-in to your account and start the adventure
-          </p>
+            Пожалуйста, введите свой аккаунт </p>
         </VCardText>
         <VCardText>
           <VForm ref="refLogin" @submit.prevent="sendLogin">
             <VRow>
               <!-- email -->
               <VCol cols="12">
-                <AppTextField v-model="form.phone" autofocus type="number" placeholder="phone"
-                  :rules="[requiredValidator]" />
+                <AppTextField v-model="form.phone" autofocus type="number" placeholder="Телефон"
+                  :rules="[requiredValidator]" label="Телефон" />
               </VCol>
 
               <!-- password -->
               <VCol cols="12">
-                <AppTextField v-model="form.password" label="Password" placeholder="············"
+                <AppTextField v-model="form.password" label="Пароль" placeholder="пароль"
                   :type="isPasswordVisible ? 'text' : 'password'"
                   :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'" :rules="[requiredValidator]"
                   @click:append-inner="isPasswordVisible = !isPasswordVisible" />
 
-                <!-- <div class="d-flex align-center flex-wrap justify-space-between mt-2 mb-4">
-                  <VCheckbox v-model="form.remember" label="Remember me" />
-                  <a class="text-primary ms-2 mb-1" href="#">
-                    Forgot Password?
-                  </a>
-                </div> -->
 
-                <VBtn block type="submit">
-                  Login
+
+                <VBtn block type="submit" class="mt-4">
+                  Отправка
                 </VBtn>
               </VCol>
 
-              <!-- create account -->
-              <VCol cols="12" class="text-center text-base">
-                <span>New on our platform?</span>
 
-                <a class="text-primary ms-2" href="#">
-                  Create an account
-                </a>
-              </VCol>
 
-              <VCol cols="12" class="d-flex align-center">
-                <VDivider />
 
-                <span class="mx-4">or</span>
 
-                <VDivider />
-              </VCol>
-
-              <!-- auth providers -->
-              <VCol cols="12" class="text-center">
-                <AuthProvider />
-              </VCol>
             </VRow>
           </VForm>
         </VCardText>
@@ -198,3 +293,4 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 <style lang="scss">
 @use "@core/scss/template/pages/page-auth.scss";
 </style>
+<!-- EF233C -->

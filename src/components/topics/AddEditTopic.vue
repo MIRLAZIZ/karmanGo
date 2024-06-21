@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2> {{ $route.params.id ? 'Mavzuni tahrirlash' : 'Mavzu qo\'shish' }}</h2>
+    <h2> {{ $route.params.id ? 'Редактировать тему' : 'Добавить тему' }}</h2>
 
     <!-- 👉 Form -->
     <VForm ref="refForm" @submit.prevent="sendTopic">
@@ -8,21 +8,21 @@
       <VRow>
         <!-- name -->
         <VCol cols="12" md="6">
-          <AppTextField v-model="topicData.name" :rules="[requiredValidator]" label="Mavzu nomi" />
+          <AppTextField v-model="topicData.name" :rules="[requiredValidator]" label="Наименование" />
 
         </VCol>
         <VCol cols="12" md="6">
-          <AppSelect v-model="topicData.type" :items="['multiple', 'single']" label="Mavzu turini tanlang" />
+          <AppSelect v-model="topicData.type" :items="['multiple', 'single']" label="Тип" />
 
         </VCol>
 
 
         <VCol cols="12" class="d-flex justify-end">
           <VBtn variant="outlined" color="secondary" @click="closeNavigationDrawer">
-            Cancel
+            Отмена
           </VBtn>
           <VBtn type="submit" class="ml-3">
-            Submit
+            {{ $route.params.id ? 'Сохранить' : 'Добавить' }}
           </VBtn>
         </VCol>
       </VRow>

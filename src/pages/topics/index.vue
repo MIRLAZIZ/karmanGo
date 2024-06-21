@@ -3,8 +3,8 @@
     <div>
 
       <div class="d-flex gap-3  align-end justify-end mb-6 ">
-        <VBtn class="" @click="$router.push('/topics/create')">
-          <VIcon icon="tabler-plus" /> Mavzu qo'shish
+        <VBtn class="" v-if="$can('store', 'TopController')" @click="$router.push('/topics/create')">
+          <VIcon icon="tabler-plus" /> добавить
         </VBtn>
       </div>
     </div>
@@ -16,12 +16,13 @@
         <!-- action buttons -->
 
         <!-- edit item -->
-        <IconBtn @click="$router.push(`/topics/edit/${item.id}`)" class="border mx-2" size="large">
+        <IconBtn v-if="$can('update', 'TopController')" @click="$router.push(`/topics/edit/${item.id}`)"
+          class="border mx-2" size="large">
           <VIcon icon="tabler-edit" color="success" />
         </IconBtn>
 
         <!-- delete item -->
-        <IconBtn @click="deleteItem(item.id)" class="border mx-2" size="large">
+        <IconBtn v-if="$can('destroy', 'TopController')" @click="deleteItem(item.id)" class="border mx-2" size="large">
           <VIcon icon="tabler-trash" color="error" />
         </IconBtn>
 
@@ -69,17 +70,17 @@ const itemData = ref({})
 
 definePage({
   meta: {
-    action: 'read',
-    subject: 'all',
+    action: "index",
+    subject: 'TopController'
   },
 })
 // "banner": "/storage/banner/2024-05/zU8msI85Z3ZV4jNkc5liDafJAAuWz5nLxuQ7gIsC.png",
 //   "alternative_text": "hello screenshot",
 
 const headers = [
-  { title: 'nomi', key: 'name' },
+  { title: 'Наименование', key: 'name' },
 
-  { title: 'Actions', key: 'actions' },
+  { title: 'Действия', key: 'actions' },
 ]
 
 const refresh = () => {
@@ -91,7 +92,7 @@ const deleteItem = (id) => {
   deleteDialog.value = true
 }
 const deleteItemConfirm = () => {
-  store.deleteBanner(deleteIndex.value)
+  store.deleteTopic(deleteIndex.value)
     .then(() => {
       configStore.successToast('Banner o\'chirildi')
       deleteDialog.value = false

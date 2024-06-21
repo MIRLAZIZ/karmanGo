@@ -1,13 +1,11 @@
 <template>
   <div>
     <div>
-      <pre>
-        {{ store.banners }}
-      </pre>
+
 
       <div class="d-flex gap-3  align-end justify-end mb-6 ">
         <VBtn class="" @click="$router.push('/banners/create')">
-          <VIcon icon="tabler-plus" /> Banner qo'shish
+          <VIcon icon="tabler-plus" /> добавить
         </VBtn>
       </div>
     </div>
@@ -25,12 +23,13 @@
         <!-- action buttons -->
 
         <!-- edit item -->
-        <IconBtn @click="$router.push(`/banners/edit/${item.id}`)" class="border mx-2" size="large">
+        <IconBtn v-if="$can('update', 'BlogController')" @click="$router.push(`/banners/edit/${item.id}`)"
+          class="border mx-2" size="large">
           <VIcon icon="tabler-edit" color="success" />
         </IconBtn>
 
         <!-- delete item -->
-        <IconBtn @click="deleteItem(item.id)" class="border mx-2" size="large">
+        <IconBtn v-if="$can('destroy', 'BlogController')" @click="deleteItem(item.id)" class="border mx-2" size="large">
           <VIcon icon="tabler-trash" color="error" />
         </IconBtn>
 
@@ -78,17 +77,17 @@ const itemData = ref({})
 
 definePage({
   meta: {
-    action: 'read',
-    subject: 'all',
+    action: "index",
+    subject: 'BlogController'
   },
 })
 // "banner": "/storage/banner/2024-05/zU8msI85Z3ZV4jNkc5liDafJAAuWz5nLxuQ7gIsC.png",
 //   "alternative_text": "hello screenshot",
 
 const headers = [
-  { title: 'Rasmi', key: 'banner' },
-  { title: 'tafsif', key: 'alternative_text' },
-  { title: 'Actions', key: 'actions' },
+  { title: 'картина', key: 'banner' },
+  { title: 'описание', key: 'alternative_text' },
+  { title: 'Действия', key: 'actions' },
 ]
 
 const refresh = () => {

@@ -9,8 +9,8 @@ import { VDataTable } from 'vuetify/labs/VDataTable';
 
 definePage({
   meta: {
-    action: 'create',
-    subject: 'all'
+    action: "index",
+    subject: 'CategoryController'
   },
 
 
@@ -25,10 +25,9 @@ const isDialogVisible = ref(false)
 const itemData = ref({})
 // headers
 const headers = [
-  { title: 'Kategoryalar rasmi', key: 'image' },
-  { title: 'Kategoriyalar nomi', key: 'name_uz' },
-  // { title: 'Post', key: 'body' },
-  { title: 'Actions', key: 'actions' },
+  { title: 'картина', key: 'image' },
+  { title: 'Наименование', key: 'name' },
+  { title: 'Действия', key: 'actions' },
 
 ]
 
@@ -81,14 +80,14 @@ const viewItem = (item) => {
     <div class="d-flex gap-3  align-end justify-end mb-6 ">
       <!-- add post -->
       <VBtn class="" @click="$router.push('/category/create')">
-        <VIcon icon="tabler-plus" /> Add post
+        <VIcon icon="tabler-plus" v-if="$can('store', 'CategoryController')" /> добавить
       </VBtn>
     </div>
 
 
 
     <!-- 👉 Data Table  -->
-    <VDataTable v-if="store.categoryies?.data" :headers="headers" :items="store.categoryies.data" class="text-no-wrap"
+    <VDataTable v-if="store.categoryies" :headers="headers" :items="store.categoryies" class="text-no-wrap"
       :loading="load">
 
       <!-- image -->
@@ -107,24 +106,14 @@ const viewItem = (item) => {
 
       <template #item.actions="{ item }">
 
-        <!-- action buttons -->
-
         <!-- edit item -->
-        <IconBtn @click="viewItem(item)" class="border mx-2" size="large">
-          <VIcon icon="tabler-eye" color="success" />
-        </IconBtn>
-
-
-        <!-- edit item -->
-        <IconBtn @click="$router.push(`/category/edit/${item.id}`)" class="border mx-2" size="large">
+        <IconBtn @click="$router.push(`/category/edit/${item.id}`)" v-if="$can('update', 'CategoryController')"
+          class="border mx-2" size="large">
           <VIcon icon="tabler-edit" color="success" />
         </IconBtn>
 
-
-
-
         <!-- delete item -->
-        <IconBtn @click="deleteItem(item.id)" class="border " size="large">
+        <IconBtn @click="deleteItem(item.id)" v-if="$can('destroy', 'CategoryController')" class="border " size="large">
           <VIcon icon="tabler-trash" color="error" />
         </IconBtn>
 

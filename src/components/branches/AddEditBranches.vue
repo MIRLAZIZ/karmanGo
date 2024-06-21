@@ -1,29 +1,29 @@
 <template>
   <div>
-    {{ $route.params.id }}
-    <h2> {{ $route.params.id ? 'Filialni tahrirlash' : 'Filial qo\'shish' }}
+    <h2> {{ $route.params.id ? 'Редактировать филиал' : 'Добавить филиал' }}
     </h2>
     <VForm ref="refForm" @submit.prevent="sendBranch">
       <VRow>
 
         <!-- name -->
         <VCol cols="12" md="6">
-          <AppTextField v-model="branchData.name" :rules="[requiredValidator]" label="Filial nomi" />
+          <AppTextField v-model="branchData.name" :rules="[requiredValidator]" label="Название" />
         </VCol>
 
         <!-- longitude, -->
         <VCol cols="12" md="6" class="d-flex gap-x-2 ">
-          <AppTextField v-model="branchData.longitude" :rules="[requiredValidator]" label="uzunlik" />
+          <AppTextField v-model="branchData.longitude" :rules="[requiredValidator]" label="Длина" />
+
           <!-- latitude -->
-          <AppTextField v-model="branchData.latitude" :rules="[requiredValidator]" label="kenglik" />
+          <AppTextField v-model="branchData.latitude" :rules="[requiredValidator]" label="Ширина" />
         </VCol>
 
         <VCol cols="12" class="d-flex justify-end">
           <VBtn variant="outlined" color="secondary" @click="closeNavigationDrawer">
-            Cancel
+            Отмена
           </VBtn>
           <VBtn type="submit" class="ml-3">
-            Submit
+            {{ $route.params.id ? 'Сохранить' : 'Добавить' }}
           </VBtn>
         </VCol>
 

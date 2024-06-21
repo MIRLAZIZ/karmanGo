@@ -11,8 +11,8 @@ import AddEditRole from '@/components/roles/AddEditRole.vue'
 
 definePage({
   meta: {
-    action: 'read',
-    subject: 'all',
+    action: "store",
+    subject: 'TopController'
   }
 })
 

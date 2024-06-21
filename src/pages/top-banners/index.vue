@@ -4,7 +4,7 @@
 
 
       <div class="d-flex gap-3  align-end justify-end mb-6 ">
-        <VBtn class="" @click="$router.push('/top-banners/create')">
+        <VBtn v-if="$can('store', 'TopBlogController')" class="" @click="$router.push('/top-banners/create')">
           <VIcon icon="tabler-plus" /> qo'shish
         </VBtn>
       </div>
@@ -32,7 +32,7 @@
                   {{ banner.alternative_text }}
                 </div>
 
-                <div @click="deleteItem(banner.id, item.top_id)">
+                <div v-if="$can('destroy', 'TopBlogController')" @click="deleteItem(banner.id, item.top_id)">
 
                   <div class="h-100">
                     <IconBtn>
@@ -59,7 +59,7 @@
 
 
         <!-- delete item -->
-        <IconBtn @click="deleteItem(item.top_id)" class="border mx-2">
+        <IconBtn v-if="$can('destroy', 'TopBlogController')" @click="deleteItem(item.top_id)" class="border mx-2">
           <VIcon icon="tabler-trash" color="error" />
         </IconBtn>
 
@@ -108,8 +108,8 @@ const top_banner_id = ref(null)
 
 definePage({
   meta: {
-    action: 'read',
-    subject: 'all',
+    action: "store",
+    subject: 'TopBlogController'
   },
 })
 const toggle = ref(null)

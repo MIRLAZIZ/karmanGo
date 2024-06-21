@@ -37,6 +37,14 @@ export const useProductsStore = defineStore('products', {
     //  get one product 
     async fetchProduct(id) {
       return await $api(`/api/product/${id}`)
+    },
+    async updataProduct(id, data) {
+      return await $api(`api/product/update/${id}`, {
+        method: "Post",
+        body: data
+      })
     }
+
+
   }
 })

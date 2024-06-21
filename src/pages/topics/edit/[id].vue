@@ -10,8 +10,8 @@ import AddEditTopic from '@/components/topics/AddEditTopic.vue'
 
 definePage({
   meta: {
-    action: 'read',
-    subject: 'all',
+    action: "update",
+    subject: 'TopController'
   },
 })
 

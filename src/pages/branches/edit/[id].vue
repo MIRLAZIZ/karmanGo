@@ -11,8 +11,8 @@ import AddEditBranch from '@/components/branches/AddEditBranches.vue'
 
 definePage({
   meta: {
-    action: 'read',
-    subject: 'all',
+    action: "update",
+    subject: 'BranchController'
   },
 })
 

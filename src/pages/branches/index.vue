@@ -5,8 +5,8 @@
 
     </pre> -->
     <div class="d-flex gap-3  align-end justify-end mb-6 ">
-      <VBtn class="" @click="$router.push('/branches/create')">
-        <VIcon icon="tabler-plus" /> Filial qo'shish
+      <VBtn v-if="$can('store', 'BranchController')" class="" @click="$router.push('/branches/create')">
+        <VIcon icon="tabler-plus" /> добавить
       </VBtn>
     </div>
 
@@ -17,12 +17,13 @@
         <!-- action buttons -->
 
         <!-- edit item -->
-        <IconBtn @click="$router.push(`/branches/edit/${item.id}`)" class="border mx-2">
+        <IconBtn v-if="$can('update', 'BranchController')" @click="$router.push(`/branches/edit/${item.id}`)"
+          class="border mx-2">
           <VIcon icon="tabler-edit" color="success" />
         </IconBtn>
 
         <!-- delete item -->
-        <IconBtn @click="deleteItem(item.id)" class="border">
+        <IconBtn v-if="$can('destroy', 'BranchController')" @click="deleteItem(item.id)" class="border">
           <VIcon icon="tabler-trash" color="error" />
         </IconBtn>
 
@@ -69,8 +70,8 @@ const deleteItem = (id) => {
 
 definePage({
   meta: {
-    action: 'read',
-    subject: 'all',
+    action: "index",
+    subject: 'BranchController'
   },
 })
 const refresh = () => {
@@ -79,10 +80,10 @@ const refresh = () => {
 
 
 const headers = [
-  { title: 'name', key: 'name' },
-  { title: 'longitude', key: 'longitude' },
-  { title: 'latitude', key: 'latitude' },
-  { title: 'actions', key: 'actions' },
+  { title: 'Наименование', key: 'name' },
+  { title: 'длина', key: 'longitude' },
+  { title: 'широта', key: 'latitude' },
+  { title: 'действия', key: 'actions' },
 ]
 
 const deleteItemConfirm = () => {

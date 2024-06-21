@@ -2,13 +2,13 @@
   <div>
 
 
-    <h2 class="mb-4">Ruxsatlar</h2>
+    <h2 class="mb-4">Разрешения</h2>
 
 
     <VRow class="">
       <VCol cols="12">
         <VCard class="pa-5">
-          <VCheckbox :label="'Barchasini belgilash'" v-model="all" @click="permissionAll" />
+          <VCheckbox label="Выбрать все" v-model="all" @click="permissionAll" />
         </VCard>
 
       </VCol>
@@ -25,8 +25,9 @@
 
       </VCol>
       <VCol cols="12" class="d-flex justify-end ">
-        <VBtn class="ml-3" @click="router.go(-1)">orqaga</VBtn>
-        <VBtn type="submit" class="ml-3" @click="sendPermission" :disabled="!permissionsData.permissions.length">Saqlash
+        <VBtn class="ml-3" @click="router.go(-1)">Отмена</VBtn>
+        <VBtn type="submit" class="ml-3" @click="sendPermission" :disabled="!permissionsData.permissions.length">
+          Сохранить
         </VBtn>
       </VCol>
     </VRow>
@@ -115,49 +116,47 @@ watch(() => permissionsData.value.permissions, (value) => {
 
 const menus = [
   {
-    title: 'Kategoriyalar',
+    title: 'Категории',
     lable: 'category',
-
   },
   {
-    title: 'Maxsulotlar',
+    title: 'Продукты',
     lable: 'products',
-
   },
   {
-    title: 'Filial',
+    title: 'Филиал',
     lable: 'branch',
   },
   {
-    title: 'Foydalanuvchilar',
+    title: 'Пользователи',
     lable: 'users',
   },
   {
-    title: 'banner',
+    title: 'Баннер',
     lable: 'banner',
   },
   {
-    title: 'Top',
+    title: 'Топ',
     lable: 'top',
   },
   // {
-  //   title: 'roles',
+  //   title: 'Роли',
   //   lable: 'roles',
   // },
   {
-    title: 'Top proucts',
+    title: 'Топ продукты',
     lable: 'topProducts',
-
   },
+  // {
+  //   title: 'Топ баннеры',
+  //   lable: 'topBanners',
+  // },
   {
-    title: 'Top banners',
-    lable: 'topBanners',
-  },
-  {
-    title: 'Orders',
+    title: 'Заказы',
     lable: 'orders',
   }
 ]
+
 
 
 
@@ -168,25 +167,23 @@ const data = ref({
   category: [
     {
       id: 1,
-      name: 'Kategoriyalar ro\'yxati',
+      name: 'Список категорий',
       permission: {
         action: "index",
         subject: 'CategoryController'
       }
-
     },
     {
       id: 2,
-      name: 'Kategoriyalar qo\'shish',
+      name: 'Добавить категорию',
       permission: {
         action: "store",
         subject: 'CategoryController'
       }
-
     },
     {
       id: 3,
-      name: 'Kategoriyalar o\'chirish',
+      name: 'Удалить категорию',
       permission: {
         action: "destroy",
         subject: 'CategoryController'
@@ -194,18 +191,17 @@ const data = ref({
     },
     {
       id: 4,
-      name: 'Kategoriyalar tahrirlash',
+      name: 'Редактировать категорию',
       permission: {
         action: "update",
         subject: 'CategoryController'
       }
-    }],
-
+    }
+  ],
   products: [
-
     {
       id: 5,
-      name: "Maxsulotlar ro'yxati",
+      name: 'Список продуктов',
       permission: {
         action: "index",
         subject: 'ProductController'
@@ -213,18 +209,15 @@ const data = ref({
     },
     {
       id: 6,
-      name: 'Maxsulot qo\'shish',
-
+      name: 'Добавить продукт',
       permission: {
         action: "store",
         subject: 'ProductController'
       }
-
     },
     {
       id: 7,
-      name: 'Maxsulot o\'chirish',
-
+      name: 'Удалить продукт',
       permission: {
         action: "destroy",
         subject: 'ProductController'
@@ -232,38 +225,33 @@ const data = ref({
     },
     {
       id: 8,
-      name: 'Maxsulot tahrirlash',
-
+      name: 'Редактировать продукт',
       permission: {
         action: "update",
         subject: 'ProductController'
       }
-    }],
-
+    }
+  ],
   branch: [
     {
       id: 9,
-      name: 'Filiallar ro\'yxati',
+      name: 'Список филиалов',
       permission: {
         action: "index",
         subject: 'BranchController'
-
       }
     },
     {
       id: 10,
-      name: 'Filial qo\'shish',
-
+      name: 'Добавить филиал',
       permission: {
         action: "store",
         subject: 'BranchController'
       }
-
     },
     {
       id: 11,
-      name: 'Filial o\'chirish',
-
+      name: 'Удалить филиал',
       permission: {
         action: "destroy",
         subject: 'BranchController'
@@ -271,18 +259,17 @@ const data = ref({
     },
     {
       id: 12,
-      name: 'Filial tahrirlash',
-
+      name: 'Редактировать филиал',
       permission: {
         action: "update",
         subject: 'BranchController'
       }
-    }],
-
+    }
+  ],
   users: [
     {
       id: 13,
-      name: 'Foydalanuvchilar ro\'yxati',
+      name: 'Список пользователей',
       permission: {
         action: "index",
         subject: 'UserController'
@@ -290,18 +277,15 @@ const data = ref({
     },
     {
       id: 14,
-      name: 'Foydalanuvchilar qo\'shish',
-
+      name: 'Добавить пользователя',
       permission: {
         action: "store",
         subject: 'UserController'
       }
-
     },
     {
       id: 15,
-      name: 'Foydalanuvchilar o\'chirish',
-
+      name: 'Удалить пользователя',
       permission: {
         action: "destroy",
         subject: 'UserController'
@@ -309,38 +293,33 @@ const data = ref({
     },
     {
       id: 16,
-      name: 'Foydalanuvchilar tahrirlash',
-
+      name: 'Редактировать пользователя',
       permission: {
         action: "update",
         subject: 'UserController'
       }
-    }],
-
+    }
+  ],
   banner: [
     {
       id: 17,
-      name: 'Banner ro\'yxati',
+      name: 'Список баннеров',
       permission: {
         action: "index",
         subject: 'BlogController'
-
       }
     },
     {
       id: 18,
-      name: 'Banner qo\'shish',
-
+      name: 'Добавить баннер',
       permission: {
         action: "create",
         subject: 'BlogController'
       }
-
     },
     {
       id: 19,
-      name: 'Banner o\'chirish',
-
+      name: 'Удалить баннер',
       permission: {
         action: "destroy",
         subject: 'BlogController'
@@ -348,41 +327,33 @@ const data = ref({
     },
     {
       id: 20,
-      name: 'Banner tahrirlash',
-
+      name: 'Редактировать баннер',
       permission: {
         action: "update",
         subject: 'BlogController'
       }
-    }],
-
-
+    }
+  ],
   top: [
     {
       id: 21,
-      name: 'Top ro\'yxati',
-
+      name: 'Список лучших',
       permission: {
         action: "index",
         subject: 'TopController'
       }
-
     },
-
     {
       id: 22,
-      name: 'Top qo\'shish',
-
+      name: 'Добавить в топ',
       permission: {
         action: "store",
         subject: 'TopController'
       }
-
     },
     {
       id: 23,
-      name: 'Top o\'chirish',
-
+      name: 'Удалить из топа',
       permission: {
         action: "destroy",
         subject: 'TopController'
@@ -390,32 +361,17 @@ const data = ref({
     },
     {
       id: 24,
-      name: 'Top tahrirlash',
-
+      name: 'Редактировать топ',
       permission: {
         action: "update",
         subject: 'TopController'
       }
-    }],
-
-  // roles: [{
-  //   id: 19,
-  //   name: 'Role qo\'shish',
-
-  // },
-  // {
-  //   id: 20,
-  //   name: 'Role o\'chirish',
-  // },
-  // {
-  //   id: 21,
-  //   name: 'Role tahrirlash',
-  // }],
-
+    }
+  ],
   topProducts: [
     {
       id: 25,
-      name: 'Top products ro\'yxati',
+      name: 'Список топ продуктов',
       permission: {
         action: "index",
         subject: 'TopProductController'
@@ -423,107 +379,73 @@ const data = ref({
     },
     {
       id: 26,
-      name: 'Top products qo\'shish',
-
+      name: 'Добавить топ продукт',
       permission: {
         action: "store",
         subject: 'TopProductController'
       }
-
     },
     {
       id: 27,
-      name: 'Top products o\'chirish',
-
+      name: 'Удалить топ продукт',
       permission: {
         action: "deleteTopsProduct",
         subject: 'TopProductController'
       }
-    },
+    }
   ],
-
   topBanners: [
     {
       id: 28,
-      name: 'Top banners ro\'yxati',
+      name: 'Список топ баннеров',
       permission: {
         action: "index",
         subject: 'TopBlogController'
       }
-
     },
-
     {
       id: 29,
-      name: 'Top banners qo\'shish',
-
+      name: 'Добавить топ баннер',
       permission: {
         action: "store",
         subject: 'TopBlogController'
       }
-
     },
-    // {
-    //   id: 30,
-    //   name: 'Top banners o\'chirish',
-
-    //   permission: {
-    //     action: "destroy",
-    //     subject: 'TopBlogController'
-    //   }
-    // },
-    // {
-    //   id: 31,
-    //   name: 'Top banners tahrirlash',
-
-    //   permission: {
-    //     action: "update",
-    //     subject: 'TopBlogController'
-    //   }
-    // }
+    {
+      id: 30,
+      name: 'Удалить топ баннер',
+      permission: {
+        action: "destroy",
+        subject: 'TopBlogController'
+      }
+    },
+    {
+      id: 31,
+      name: 'Редактировать топ баннер',
+      permission: {
+        action: "update",
+        subject: 'TopBlogController'
+      }
+    }
   ],
-
   orders: [
     {
       id: 32,
-      name: 'Orders ro\'yxati',
+      name: 'Список заказов',
       permission: {
         action: "allOrders",
         subject: 'ProfileController'
       }
-    },
-
-
-    // {
-    //   id: 33,
-    //   name: 'Orders qo\'shish',
-
-    //   permissions: {
-    //     action: "store",
-    //     subject: 'ordersCreate'
-    //   }
-
-    // },
-    // {
-    //   id: 34,
-    //   name: 'Orders o\'chirish',
-
-    //   permissions: {
-    //     action: "destroy",
-    //     subject: 'ordersDelete'
-    //   }
-    // },
-    // {
-    //   id: 35,
-    //   name: 'Orders tahrirlash',
-
-    //   permissions: {
-    //     action: "update",
-    //     subject: 'ordersUpdate'
-    //   }
-    // }
+    }
   ]
 })
+
+
+
+
+
+
+
 
 
 

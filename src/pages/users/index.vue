@@ -2,7 +2,9 @@
   <div>
     <div class="d-flex gap-3  align-end justify-end mb-6">
 
-      <VBtn @click="$router.push('/users/create')"> Foydalanuvchi qo'shish </VBtn>
+      <VBtn v-if="$can('store', 'UserController')" @click="$router.push('/users/create')">
+        <VIcon icon="tabler-plus" /> добавить
+      </VBtn>
     </div>
 
 
@@ -41,7 +43,8 @@
 
 
         <!-- edit item -->
-        <IconBtn @click="$router.push(`/users/update/${item.id}`)" class="border mx-2" size="large">
+        <IconBtn v-if="$can('update', 'UserController')" @click="$router.push(`/users/update/${item.id}`)"
+          class="border mx-2" size="large">
           <VIcon icon="tabler-edit" color="success" />
         </IconBtn>
 
@@ -49,11 +52,27 @@
 
 
         <!-- delete item -->
-        <IconBtn @click="deleteItem(item.id)" class="border " size="large">
+        <IconBtn v-if="$can('destroy', 'UserController')" @click="deleteItem(item.id)" class="border " size="large">
           <VIcon icon="tabler-trash" color="error" />
         </IconBtn>
 
 
+      </template>
+
+
+
+      <!-- pagination -->
+      <template #bottom>
+        <VCardText class="pt-2">
+          <div class="d-flex justify-end">
+
+
+
+            <VPagination v-if="store.users?.data" v-model="store.page"
+              :total-visible="$vuetify.display.smAndDown ? 3 : 5"
+              :length="Math.ceil(store.users?.total / store.users.per_page)" @click="refresh" />
+          </div>
+        </VCardText>
       </template>
 
 
@@ -70,29 +89,27 @@
 </template>
 
 <script setup>
-import { VDataTable } from 'vuetify/lib/labs/components.mjs';
-import { useUsersStore } from '@/@core/stores/users';
-import { onMounted, ref } from 'vue';
 import { useConfigStore } from '@/@core/stores/config';
+import { useUsersStore } from '@/@core/stores/users';
 import DeleteDialog from '@/components/posts/DeleteDialog.vue';
+import { onMounted, ref } from 'vue';
+import { VDataTable } from 'vuetify/lib/labs/components.mjs';
 
 
 definePage({
   meta: {
-    action: 'read',
-    subject: 'all',
+    action: "index",
+    subject: 'UserController'
   }
 })
 
 const store = useUsersStore()
 const baseUrl = import.meta.env.VITE_API_BASE_URL
 const headers = [
-  { title: 'Name', key: 'name' },
-  { title: 'Phone', key: 'phone' },
-  { title: 'Email', key: 'email_verified_at' },
-  { title: 'Type', key: 'type' },
-  { title: 'Actions', key: 'actions' },
-
+  { title: 'Наименование', key: 'name' },
+  { title: 'Телефон', key: 'phone' },
+  { title: 'Тип', key: 'type' },
+  { title: 'Действия', key: 'actions' },
 ]
 const refresh = () => {
   store.fetchUsers(store.page)

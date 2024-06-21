@@ -5,7 +5,7 @@
 </pre> -->
       <div class="d-flex gap-3  align-end justify-end mb-6 ">
         <VBtn class="" @click="$router.push('/top-products/create')">
-          <VIcon icon="tabler-plus" /> Qo'shish
+          <VIcon icon="tabler-plus" /> добавить
         </VBtn>
       </div>
     </div>
@@ -26,7 +26,8 @@
 
         <!-- delete item -->
         <div class="h-100">
-          <IconBtn @click="deleteItem(item.top_id)" class="border mt-2">
+          <IconBtn v-if="$can('deleteTopsProduct', 'TopProductController')" @click="deleteItem(item.top_id)"
+            class="border mt-2">
             <VIcon icon="tabler-trash" color="error" />
           </IconBtn>
 
@@ -37,10 +38,10 @@
 
       <!-- prooducts table  -->
       <template #item.products="{ item }">
-
+        <!-- {{ item }} -->
         <div class="h-100  ">
           <div @click="producttoggelData(item.top_id)" class="my-2 cursor-pointer">
-            Maxsulotlarni ko'rish
+            Просмотр продуктов
             <VIcon icon="tabler-chevron-down" />
 
           </div>
@@ -51,10 +52,11 @@
                 class="pa-2 productContainer d-flex justify-space-between align-center">
 
                 <div>
-                  {{ product.name_uz }}
+                  {{ product.name }}
                 </div>
 
-                <div @click="deleteItem(item.top_id, product.id)">
+                <div @click="deleteItem(item.top_id, product.id)"
+                  v-if="$can('deleteTopsProduct', 'TopProductController')">
 
                   <div class="h-100">
                     <IconBtn>
@@ -109,7 +111,6 @@ import { useTopProductStore } from '@/@core/stores/top_product';
 import DeleteDialog from '@/components/posts/DeleteDialog.vue';
 import { onMounted, ref } from 'vue';
 import { useConfigStore } from '@/@core/stores/config';
-import { Icon } from 'leaflet';
 
 
 const store = useTopProductStore()
@@ -125,29 +126,29 @@ const productId = ref(null)
 
 definePage({
   meta: {
-    action: 'read',
-    subject: 'all',
+    action: "index",
+    subject: 'TopProductController'
   },
 })
 
 
 const headers = [
   {
-    title: 'Nomi', key: 'name',
+    title: 'Наименование', key: 'name',
 
   },
   {
-    title: 'maxsulotlar', key: 'products',
+    title: 'Продукты', key: 'products',
 
   },
   {
-    title: 'action', key: 'actions',
+    title: 'Действия', key: 'actions',
   }
 ]
 
 const productHeaders = [
   {
-    title: 'Nomi', key: 'name_uz',
+    title: 'Наименование', key: 'name',
   }]
 
 const refresh = () => {

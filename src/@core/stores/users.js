@@ -41,6 +41,13 @@ export const useUsersStore = defineStore("users", {
             return await $api(`/api/user/delete/${id}`, {
                 method: 'Delete'
             })
+        },
+        // api/change-password
+        async changePasword(id, data) {
+            return await $api(`/api/change-password`, {
+                method: "post",
+                body: data
+            })
         }
     }
 

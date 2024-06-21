@@ -20,7 +20,7 @@ export const useTopicsStore = defineStore("topics", {
     },
 
     async deleteTopic(id) {
-      return await $api(`/api/topic/delete/${id}`, {
+      return await $api(`/api/top/delete/${id}`, {
         method: 'Delete'
 
       })

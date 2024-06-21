@@ -54,6 +54,7 @@ declare module 'vue-router/auto/routes' {
     'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,
     'not-authorized': RouteRecordInfo<'not-authorized', '/not-authorized', Record<never, never>, Record<never, never>>,
     'orders': RouteRecordInfo<'orders', '/orders', Record<never, never>, Record<never, never>>,
+    'orders-views-id': RouteRecordInfo<'orders-views-id', '/orders/views/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'product-create': RouteRecordInfo<'product-create', '/product/Create', Record<never, never>, Record<never, never>>,
     'product-edit-id': RouteRecordInfo<'product-edit-id', '/product/edit/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'roles': RouteRecordInfo<'roles', '/roles', Record<never, never>, Record<never, never>>,

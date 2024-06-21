@@ -15,14 +15,14 @@ export const useConfigStore = defineStore('config', () => {
 
   // notificaton
   const successToast = () => {
-    toast.success("success", {
+    toast.success("Успешно", {
       autoClose: 3000,
     }) // ToastOptions
   }
 
   const errorToast = errorData => {
     toast.error(errorData, {
-      autoClose: 3000,
+      autoClose: 7000,
     }) // ToastOptions
   }
 

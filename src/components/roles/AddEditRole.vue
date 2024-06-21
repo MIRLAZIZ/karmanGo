@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2> {{ $route.params.id ? 'Role tahrirlash' : 'Role qo\'shish' }}</h2>
+    <h2> {{ $route.params.id ? 'Редактировать роль' : 'Role qo\'shish' }}</h2>
 
     <!-- 👉 Form -->
     <VForm ref="refForm" @submit.prevent="sendRole">
@@ -8,21 +8,21 @@
       <VRow>
         <!-- name -->
         <VCol cols="12" md="6">
-          <AppTextField v-model="roleData.label" :rules="[requiredValidator]" label="Role nomi" />
+          <AppTextField v-model="roleData.label" :rules="[requiredValidator]" label="Роль название " />
 
         </VCol>
         <VCol cols="12" md="6">
-          <AppTextField v-model="roleData.name" label="Role" :rules="[requiredValidator]" />
+          <AppTextField v-model="roleData.name" label="Роль" :rules="[requiredValidator]" />
 
         </VCol>
 
 
         <VCol cols="12" class="d-flex justify-end">
           <VBtn variant="outlined" color="secondary" @click="closeNavigationDrawer">
-            Cancel
+            Отмена
           </VBtn>
           <VBtn type="submit" class="ml-3">
-            {{ $route.params.id ? 'Saqlash' : 'Qo\'shish' }}
+            {{ $route.params.id ? 'Сохранить' : 'Добавить' }}
           </VBtn>
         </VCol>
       </VRow>
