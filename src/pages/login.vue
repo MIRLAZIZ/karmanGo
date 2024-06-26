@@ -204,13 +204,12 @@ const sendLogin = () => {
           ability.update(abilityRules)
           useCookie('userData').value = res.user
           useCookie('accessToken').value = res.token
-          useCookie('refreshToken').value = res.refresh_token
+          // useCookie('refreshToken').value = res.refresh_token
           router.push('/').then(() => {
             store.successToast()
           })
         })
         .catch((err) => {
-          console.log(err.response);
           store.errorToast(err.response._data.error)
         })
 

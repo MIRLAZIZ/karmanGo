@@ -4,7 +4,8 @@ import { $api } from "@/utils/api";
 export const useBannersStore = defineStore("banners", {
     state: () => ({
         banners: [],
-        page: 1
+        page: 1,
+        logoutData: false
     }),
     actions: {
         async getBanners() {

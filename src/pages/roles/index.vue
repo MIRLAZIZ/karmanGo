@@ -80,8 +80,6 @@ definePage({
     subject: 'all',
   },
 })
-const userData = useCookie('userData')
-console.log(userData.value.type);
 
 const headers = [
   { title: 'Наименование', key: 'label' },

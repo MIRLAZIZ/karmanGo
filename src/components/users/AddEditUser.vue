@@ -120,6 +120,22 @@ const onFileChange = (event) => {
   image.value = URL.createObjectURL(userData.value.image)
 }
 
+const updateUser = (id, data) => {
+
+  store.updateUser(id, data).then(() => {
+    router.push('/users')
+      .then(() => {
+        storeConfig.successToast()
+      })
+  }).catch((err) => {
+    let errorData = Object.keys(err.response._data.message).map(key => err.response._data.message[key])
+    errorData.forEach((item) => {
+      storeConfig.errorToast(item)
+    })
+  })
+
+}
+
 const sendUser = () => {
   refForm.value?.validate().then(({ valid }) => {
 
@@ -134,24 +150,34 @@ const sendUser = () => {
 
 
       if (route.params.id) {
-        store.updateUser(route.params.id, formData).then(() => {
-          router.push('/users')
+
+        if (userData.value.newPassword) {
+          store.changePasword({
+            old_password: userData.value.password,
+            new_password: userData.value.newPassword
+          })
             .then(() => {
-              storeConfig.successToast()
-            })
-        }).catch((err) => {
+              updateUser(route.params.id, formData)
 
-          if (err.response.status >= 500) {
-            storeConfig.errorToast('На сервере произошла ошибка')
-          } else {
-            let errorData = Object.keys(err.response._data.message).map(key => err.response._data.message[key])
-            errorData.forEach((item) => {
-              storeConfig.errorToast(item)
+            })
+            .catch((err) => {
+              storeConfig.errorToast(err.response._data.message)
+
+
             })
 
-          }
 
-        })
+        }
+        else {
+
+          updateUser(route.params.id, formData)
+
+        }
+
+
+
+
+
 
       }
       else {
@@ -159,7 +185,7 @@ const sendUser = () => {
         store.createUser(formData).then(() => {
           router.push('/users')
             .then(() => {
-              storeConfig.successToast('Foydalanuvchi qo\'shildi')
+              storeConfig.successToast()
             })
         }).catch((err) => {
 

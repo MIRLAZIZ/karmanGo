@@ -7,8 +7,16 @@ export default [
     action: "index",
     subject: 'ProductController'
   },
+
   {
-    title: 'Kategoriyalar',
+    title: 'Заказы',
+    to: { name: 'orders' },
+    icon: { icon: 'tabler-reorder' },
+    action: "allOrders",
+    subject: 'ProfileController'
+  },
+  {
+    title: 'Категории',
     to: { name: 'categories' },
     icon: { icon: 'tabler-category-2' },
     action: "index",
@@ -17,48 +25,48 @@ export default [
   },
 
   {
-    title: 'Filial',
+    title: 'Филиал',
     to: { name: 'branches' },
     icon: { icon: 'tabler-git-branch' },
     action: "index",
     subject: 'BranchController'
   },
   {
-    title: 'Foydalanuvchilar',
+    title: 'Пользователи',
     to: { name: 'users' },
     icon: { icon: 'tabler-users' },
     action: "index",
     subject: 'UserController'
   },
   {
-    title: 'banner',
+    title: 'Баннеры',
     to: { name: 'banners' },
     icon: { icon: 'tabler-rectangle ' },
     action: "index",
     subject: 'BlogController'
   },
   {
-    title: 'Top',
+    title: 'Топ',
     to: { name: 'topics' },
     icon: { icon: 'tabler-square-chevrons-up' },
     action: "index",
     subject: 'TopController'
   },
   {
-    title: 'roles',
+    title: 'Роли',
     to: { name: 'roles' },
     icon: { icon: 'tabler-file-settings' },
     action: 'read',
     subject: 'all',
   },
   {
-    title: 'Top proucts',
+    title: 'Топ продукты',
     to: { name: 'top-products' },
     icon: { icon: 'tabler-square-chevrons-up' },
     action: "index",
     subject: 'TopProductController'
 
-  },
+  }
   // {
   //   title: 'Top banners',
   //   to: { name: 'top-banners' },
@@ -69,11 +77,5 @@ export default [
 
 
   // },
-  {
-    title: 'Orders',
-    to: { name: 'orders' },
-    icon: { icon: 'tabler-reorder' },
-    action: "allOrders",
-    subject: 'ProfileController'
-  }
+
 ]

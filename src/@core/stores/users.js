@@ -43,7 +43,7 @@ export const useUsersStore = defineStore("users", {
             })
         },
         // api/change-password
-        async changePasword(id, data) {
+        async changePasword(data) {
             return await $api(`/api/change-password`, {
                 method: "post",
                 body: data
